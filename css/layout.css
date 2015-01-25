@@ -1,0 +1,46 @@
+@charset "utf-8";
+/* CSS Document */
+
+html, body { margin: 0px; padding: 0px; border: 0px; }
+#label{
+position: absolute;
+top:1em;
+margin-top:1%;
+margin-left:1%;
+color:#FC0;
+background-color:rgba(0,0,0,0.3); 
+padding:1em;
+border-bottom-left-radius:3px;
+border-bottom-right-radius:3px;
+border-top-right-radius:3px;
+border-top-left-radius:3px;
+}
+.labelValues{
+color:#3F3;	
+}
+
+#console{
+position: absolute;
+bottom:0px;
+margin-bottom:2%;
+margin-top:1%;
+margin-left:1%;
+color:#FC0;
+background-color:rgba(0,0,0,0.3); 
+padding:1em;
+height:20%;
+width:30%;
+border-bottom-left-radius:3px;
+border-bottom-right-radius:3px;
+border-top-right-radius:3px;
+border-top-left-radius:3px;
+}
+textarea {
+resize: none;
+width:100%;
+height:80%;
+margin-bottom:1%;
+}
+input {
+width:100%;
+}

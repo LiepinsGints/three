@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Index</title>
+<link rel="stylesheet" href="css/layout.css" />
+<script type="text/javascript" src="js/three.js"></script>
+<script type="text/javascript" src="js/KeyInputs.js"></script>
+<script type="text/javascript" src="js/label.js"></script>
+
+<!-- some tutorial https://stemkoski.github.io/Three.js/#mesh-movement-->
+</head>
+<body>
+<script>
+
+//--> base variables start 
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+//<-- base variables end			
+//--> renderer definition start
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+//<-- renderer definition end
+/******************** OBJECT DEFINITIONS START  *********************/ 
+//--> create cube start
+//var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+//var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+//var cube = new THREE.Mesh( geometry, material );
+//scene.add( cube );
+//<-- create cube end
+//--> create light start
+var light = new THREE.PointLight( 0xff0000, 1, 100 );
+light.position.set( 50, 50, 50 );
+
+scene.add( light );
+light.position.z = 100;
+//<-- create light end
+//-->create plane start
+var texture = THREE.ImageUtils.loadTexture( "img/textures/road.jpg" );
+texture.wrapS = THREE.RepeatWrapping; 
+texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set( 10, 10 ); 
+var planeGeo =  new THREE.PlaneGeometry(1000,1000,100,100);
+//var planeMat = new THREE.MeshLambertMaterial({ map : texture });
+var planeMat = new THREE.MeshBasicMaterial( { map : texture } );
+var plane = new THREE.Mesh(planeGeo, planeMat);
+scene.add( plane );
+//<--create plane end
+//--> camera settings start
+camera.position.z = 1000;
+//camera.rotation.x = 90 * Math.PI / 180;
+//<-- camera settings end
+/******************** OBJECT DEFINITIONS END ********************/
+/******************** OBJECT PHYSYCS FUNCTIONS START ********************/
+/******************** OBJECT PHYSYCS FUNCTIONS END ********************/
+
+/******************** PLAYER FUNCTIONS START ********************/
+document.addEventListener('keydown',onDocumentKeyDown,false);
+
+/******************** PLAYER FUNCTIONS END ********************/
+//--> renderer function start
+var render = function () {
+requestAnimationFrame( render );
+renderer.render(scene, camera);
+//update label
+updateLabel();
+};
+//<-- renderer function end
+//--> function init start
+render();
+//<-- function init end
+</script>
+<div id="label">
+Camera position: <span class="labelValues">
+<span id="CamX">0</span>
+<span id="CamY">0</span>
+<span id="CamZ">0</span>
+</span>
+</div>
+
+<div id="console">
+<textarea name="message"  readonly="readonly">
+command: spawn cube
+command: spawn undo
+command: spawn redo
+command: help
+</textarea><br>
+<input type="text" name="command">
+
+</div>
+
+
+</body>
+</html>
