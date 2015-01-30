@@ -10,5 +10,4 @@ document.getElementById("CurentSegment").innerHTML=planePos.getSegment(planeW, p
 document.getElementById("LeftVertice").innerHTML=planePos.getVertices(planeW, planeH, planeWs, planeHs,cube.position.x,cube.position.y);
 
 
-
 }

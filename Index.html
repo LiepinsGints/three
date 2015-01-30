@@ -27,10 +27,10 @@ document.body.appendChild( renderer.domElement );
 /******************** OBJECT DEFINITIONS START  *********************/ 
 //--> create cube start
 var textureCube = THREE.ImageUtils.loadTexture( "img/textures/BoxTextures/crate_1.jpg" );
-var geometry = new THREE.BoxGeometry( 20, 20, 20 );
+var geometry = new THREE.BoxGeometry( 6, 6, 6 );
 var material = new THREE.MeshLambertMaterial( { map : textureCube }  );
 var cube = new THREE.Mesh( geometry, material );
-cube.position.z=10;
+cube.position.z=3;
 scene.add( cube );
 //<-- create cube end
 //--> create light start
@@ -44,38 +44,48 @@ scene.add( lightAmbient );
 //<-- create light end
 scene.fog = new THREE.FogExp2( 0xFFFFFF, 0.0019 );
 //-->create plane start
+//texture 1
 var texture = THREE.ImageUtils.loadTexture( "img/textures/Grass/Grass1.png" );
 texture.wrapS = THREE.RepeatWrapping; 
 texture.wrapT = THREE.RepeatWrapping;
-texture.repeat.set( 10, 10 ); 
+texture.repeat.set( 100, 100 ); 
+//texture 2
+var texture2 = THREE.ImageUtils.loadTexture( "img/textures/Roads/road1.jpg" );
+texture2.wrapS = THREE.RepeatWrapping; 
+texture2.wrapT = THREE.RepeatWrapping;
+texture2.repeat.set( 100, 100 ); 
 var planeW=1000;
 var planeH=1000; 
-var planeWs=100;
-var planeHs=100;
+var planeWs=200;
+var planeHs=200;
 var planeGeo =  new THREE.PlaneGeometry(planeW,planeH,planeWs,planeHs);
 var planeMat = new THREE.MeshLambertMaterial( { map : texture } );
-var plane = new THREE.Mesh(planeGeo, planeMat);
+var planeMat2 = new THREE.MeshLambertMaterial( { map : texture2 } );
+planeGeo.materials = [ planeMat,planeMat2];
+
+var plane = new THREE.Mesh(planeGeo, new THREE.MeshFaceMaterial( planeGeo.materials ));
+//planeGeo.faces[4950].materialIndex = 1;
+
 scene.add( plane );
 
 //<--create plane end
 //--> camera settings start
-camera.position.z = 1000;
 camera.rotation.x = 45 * Math.PI / 180;
 //<-- camera settings end
 /******************** OBJECT DEFINITIONS END ********************/
 
 /******************** PLAYER FUNCTIONS START ********************/
-document.addEventListener( 'keydown', keyDown, false );
-document.addEventListener( 'keyup', keyUp, false );
+
+
 var camPlayer= new CameraPlayer(cube,camera);
 var delta;
 var meshMove = new  MeshMove(cube);
-meshMove.setSpeed(100);
+meshMove.setSpeed(30);//30
 var planePos = new PlanePos();//<-- for nearest vertice and segment calculation
 var temp=planePos.getSegment(planeW, planeH, planeWs, planeHs,cube.position.x,cube.position.y);
 //window.alert("temp"+temp);
 //document.getElementById("CurentSegment").innerHTML=temp;
-
+document.addEventListener( 'keydown', keyDown, false );
 function keyDown(event){
 	switch(event.keyCode){
      case 37 : //left arrow 
@@ -91,15 +101,16 @@ function keyDown(event){
      meshMove.setBack(1);
     break;
 	case 107 : //inrease terrain
-     editPlane(planePos.getVertices(planeW, planeH, planeWs, planeHs,cube.position.x,cube.position.y),10,plane);
+     editPlane(planePos.getVertices(planeW, planeH, planeWs, planeHs,cube.position.x,cube.position.y),1,plane);
     break;
 	case 109 : //lower terrain
-     editPlane(planePos.getVertices(planeW, planeH, planeWs, planeHs,cube.position.x,cube.position.y), -10,plane);
+     editPlane(planePos.getVertices(planeW, planeH, planeWs, planeHs,cube.position.x,cube.position.y), -1,plane);
     break;
 	}
 	
 	
 }//<-- keyDown end
+document.addEventListener( 'keyup', keyUp, false );
 function keyUp(event){
 	switch(event.keyCode){
      case 37 : //left arrow 
@@ -116,7 +127,33 @@ function keyUp(event){
     break;
 	}
 }//<-- key up end
+//--> camera movement script start
+document.addEventListener( 'mousemove', mouseMove, false );
+document.addEventListener( 'mousedown', mouseDown, false );
+document.addEventListener( 'mouseup', mouseUp, false );
+var cameraMoveX=0;
+var cameraMoveY=0;
+var cameraMoveZ=0;
+var x;
+var y;
+//window.innerWidth/window.innerHeight
+function mouseMove(event){
+x = event.clientX;
+y = event.clientY;
+document.getElementById("MousePos").innerHTML="x: "+x +"y: "+y;
+	//camera.rotation.y = 45 * Math.PI / 180;
+}//<--
+function mouseDown(event){
+cameraMoveX=1;
+	//meshMove.setForward(1);
+}
+function mouseUp(event){
+cameraMoveX=0;
+}
 
+//<-- camera movement script end
+//document.addEventListener( 'mousemove', mouseMove, false );
+//--> plane edit function start
 function editPlane(verticeId, height,plane){
   for(i=0;i<4;i++){
   if(i==1)verticeId+=1;
@@ -124,21 +161,43 @@ function editPlane(verticeId, height,plane){
   if(i==3)verticeId+=1;	
   plane.geometry.vertices[verticeId].z += height;
   }
+
   planeGeo.verticesNeedUpdate = true;
-}//<-- palne edit end
+ // planeGeo.facesNeedUpdate = true;
+}//<-- plane edit end
 
 /*
 for ( var i = 0; i<plane.geometry.vertices.length; i++ ) {
          plane.geometry.vertices[i].z = Math.floor((Math.random() * 100) + 1);;
     }
 	*/
+	  
 function update(delta){
 updateLabel(delta);
-camera=camPlayer.setPos(cube.position.x,cube.position.y-100,cube.position.z+150);
+camera=camPlayer.setPos(cube.position.x,cube.position.y-35,cube.position.z+35);
 meshMove.update(delta);
-
-}//<--
-
+planeGeo.faces[ 1 ].materialIndex = 1;
+planeGeo.faces[ 2 ].materialIndex = 1;
+//<-- camera movement
+if(cameraMoveX==1){
+	if(x<window.innerWidth/2){
+      cube.rotation.z += 100*delta * Math.PI / 180;
+	  //Calculate distance between points (radius)
+	  
+		//calculate new point after 1 degree
+	    //camera.rotation.z += 10 * Math.PI / 180;
+		
+	}
+	else{
+	cube.rotation.z -= 100*delta * Math.PI / 180;
+	//camera.rotation.z += 10 * Math.PI / 180;
+	}
+//camera.rotation.y += 1 * Math.PI / 180;
+}
+}//<--update function end
+  //for( var i = 1; i < 200; i ++ ) {
+  //  planeGeo.faces[ i ].materialIndex = 1;
+//}
 /******************** PLAYER FUNCTIONS END ********************/
 //--> renderer function start
 var render = function () {
@@ -170,6 +229,9 @@ Curent segment: <span class="labelValues">
 </span><br />
 Left Top verticet: <span class="labelValues">
 <span id="LeftVertice">0</span>
+</span><br />
+Mouse position: <span class="labelValues">
+<span id="MousePos">0</span>
 </span><br />
 </div>
 <div id="console">
