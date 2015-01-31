@@ -9,6 +9,7 @@
 <script type="text/javascript" src="js/CameraPlayer.js"></script>
 <script type="text/javascript" src="js/MeshMove.js"></script>
 <script type="text/javascript" src="js/planePos.js"></script>
+<script type="text/javascript" src="js/RotateArroundPoint.js"></script>
 <!-- some tutorial https://stemkoski.github.io/Three.js/#mesh-movement-->
 </head>
 <body>
@@ -34,10 +35,10 @@ cube.position.z=3;
 scene.add( cube );
 //<-- create cube end
 //--> create light start
-var lightPoint = new THREE.PointLight( 0xFFFFFF, 2, 1000 );
-lightPoint.position.set( 50, 50, 50 );
+var lightPoint = new THREE.PointLight( 0xFFFFFF, 2, 15 );
+lightPoint.position.set( cube.position.x-50, cube.position.y, cube.position.z+5 );
 scene.add( lightPoint );
-lightPoint.position.z = 100;
+//lightPoint.position.z = 100;
 
 var lightAmbient = new THREE.AmbientLight( 0x404040 ); // soft white light
 scene.add( lightAmbient );
@@ -106,6 +107,11 @@ function keyDown(event){
 	case 109 : //lower terrain
      editPlane(planePos.getVertices(planeW, planeH, planeWs, planeHs,cube.position.x,cube.position.y), -1,plane);
     break;
+	case 110:
+	var point = RotateArroundPoint(lightPoint.position.x,lightPoint.position.y,cube.position.x,cube.position.y,6);	
+	lightPoint.position.x=point[0];
+	lightPoint.position.y=point[1];
+	break;
 	}
 	
 	
@@ -154,6 +160,7 @@ cameraMoveX=0;
 //<-- camera movement script end
 //document.addEventListener( 'mousemove', mouseMove, false );
 //--> plane edit function start
+
 function editPlane(verticeId, height,plane){
   for(i=0;i<4;i++){
   if(i==1)verticeId+=1;
@@ -171,6 +178,8 @@ for ( var i = 0; i<plane.geometry.vertices.length; i++ ) {
          plane.geometry.vertices[i].z = Math.floor((Math.random() * 100) + 1);;
     }
 	*/
+	//cube.position.x
+
 	  
 function update(delta){
 updateLabel(delta);
@@ -182,14 +191,14 @@ planeGeo.faces[ 2 ].materialIndex = 1;
 if(cameraMoveX==1){
 	if(x<window.innerWidth/2){
       cube.rotation.z += 100*delta * Math.PI / 180;
-	  //Calculate distance between points (radius)
-	  
-		//calculate new point after 1 degree
-	    //camera.rotation.z += 10 * Math.PI / 180;
-		
+      
+      // RotateArroundPoint(camera.position.x,camera.position.y,cube.position.x,cube.position.y,5);	
 	}
 	else{
 	cube.rotation.z -= 100*delta * Math.PI / 180;
+	
+	
+	
 	//camera.rotation.z += 10 * Math.PI / 180;
 	}
 //camera.rotation.y += 1 * Math.PI / 180;
@@ -233,6 +242,16 @@ Left Top verticet: <span class="labelValues">
 Mouse position: <span class="labelValues">
 <span id="MousePos">0</span>
 </span><br />
+Angle: <span class="labelValues">
+<span id="Angle">0</span>
+</span><br />
+Cube pos: <span class="labelValues">
+<span id="CubePos">0</span>
+</span><br />
+Light pos: <span class="labelValues">
+<span id="LightPos">0</span>
+</span><br />
+
 </div>
 <div id="console">
 <textarea name="message"  readonly="readonly">
