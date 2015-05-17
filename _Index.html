@@ -10,6 +10,9 @@
 <script type="text/javascript" src="js/MeshMove.js"></script>
 <script type="text/javascript" src="js/planePos.js"></script>
 <script type="text/javascript" src="js/RotateArroundPoint.js"></script>
+<script type="text/javascript" src="js/ConsoleCommands.js"></script>
+<script type="text/javascript" src="js/Controls.js"></script>
+
 <!-- some tutorial https://stemkoski.github.io/Three.js/#mesh-movement-->
 </head>
 <body>
@@ -19,6 +22,7 @@
 var clock = new THREE.Clock();
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 700 );
+var terminal =new ConsoleCommands();
 //<-- base variables end			
 //--> renderer definition start
 var renderer = new THREE.WebGLRenderer();
@@ -34,10 +38,30 @@ var cube = new THREE.Mesh( geometry, material );
 cube.position.z=3;
 scene.add( cube );
 //<-- create cube end
+//---> create sphera
+var spheraGeo = new THREE.SphereGeometry( 5, 32, 32 );
+var spheraMat= new THREE.MeshBasicMaterial( {color: 0xffff00} );
+var sphera = new THREE.Mesh( spheraGeo, spheraMat );
+sphera.position.z=15;
+scene.add( sphera );
+
+
+var spheraGeo1 = new THREE.SphereGeometry( 5, 32, 32 );
+var spheraMat1= new THREE.MeshBasicMaterial( {color: 0xba1a1a} );
+var sphera1 = new THREE.Mesh( spheraGeo1, spheraMat1 );
+sphera1.position.z=15;
+sphera1.position.x=30;
+scene.add( sphera1 );
+
+
+//<-- sphera end
+
+
 //--> create light start
 var lightPoint = new THREE.PointLight( 0xFFFFFF, 2, 15 );
 lightPoint.position.set( cube.position.x-50, cube.position.y, cube.position.z+5 );
 scene.add( lightPoint );
+var rotateLight= new  RotateArroundPoint(lightPoint,cube.position.x,cube.position.y,cube.position.z,1,40,2);
 //lightPoint.position.z = 100;
 
 var lightAmbient = new THREE.AmbientLight( 0x404040 ); // soft white light
@@ -71,7 +95,7 @@ scene.add( plane );
 
 //<--create plane end
 //--> camera settings start
-camera.rotation.x = 45 * Math.PI / 180;
+//camera.rotation.x = 45 * Math.PI / 180;
 //<-- camera settings end
 /******************** OBJECT DEFINITIONS END ********************/
 
@@ -86,53 +110,7 @@ var planePos = new PlanePos();//<-- for nearest vertice and segment calculation
 var temp=planePos.getSegment(planeW, planeH, planeWs, planeHs,cube.position.x,cube.position.y);
 //window.alert("temp"+temp);
 //document.getElementById("CurentSegment").innerHTML=temp;
-document.addEventListener( 'keydown', keyDown, false );
-function keyDown(event){
-	switch(event.keyCode){
-     case 37 : //left arrow 
-	 meshMove.setLeft(1);
-    break;
-    case 38 : // up arrow  
-	 meshMove.setForward(1);
-    break;
-    case 39 : // right arrow 
-     meshMove.setRight(1);
-    break;
-    case 40 : //down arrow
-     meshMove.setBack(1);
-    break;
-	case 107 : //inrease terrain
-     editPlane(planePos.getVertices(planeW, planeH, planeWs, planeHs,cube.position.x,cube.position.y),1,plane);
-    break;
-	case 109 : //lower terrain
-     editPlane(planePos.getVertices(planeW, planeH, planeWs, planeHs,cube.position.x,cube.position.y), -1,plane);
-    break;
-	case 110:
-	var point = RotateArroundPoint(lightPoint.position.x,lightPoint.position.y,cube.position.x,cube.position.y,6);	
-	lightPoint.position.x=point[0];
-	lightPoint.position.y=point[1];
-	break;
-	}
-	
-	
-}//<-- keyDown end
-document.addEventListener( 'keyup', keyUp, false );
-function keyUp(event){
-	switch(event.keyCode){
-     case 37 : //left arrow 
-	 meshMove.setLeft(0);
-    break;
-    case 38 : // up arrow  
-	 meshMove.setForward(0);
-    break;
-    case 39 : // right arrow 
-     meshMove.setRight(0);
-    break;
-    case 40 : //down arrow
-     meshMove.setBack(0);
-    break;
-	}
-}//<-- key up end
+
 //--> camera movement script start
 document.addEventListener( 'mousemove', mouseMove, false );
 document.addEventListener( 'mousedown', mouseDown, false );
@@ -180,10 +158,10 @@ for ( var i = 0; i<plane.geometry.vertices.length; i++ ) {
 	*/
 	//cube.position.x
 
-	  
+//camera=camPlayer.setPos(cube.position.x,cube.position.y-60,cube.position.z+60);	  
 function update(delta){
 updateLabel(delta);
-camera=camPlayer.setPos(cube.position.x,cube.position.y-35,cube.position.z+35);
+camera=camPlayer.setPos(cube.position.x,cube.position.y,cube.position.z+100);
 meshMove.update(delta);
 planeGeo.faces[ 1 ].materialIndex = 1;
 planeGeo.faces[ 2 ].materialIndex = 1;
@@ -215,6 +193,8 @@ renderer.render(scene, camera);
 //update label
 delta = clock.getDelta();
 update(delta);
+
+
 //cameraFollow
 
 
@@ -260,7 +240,7 @@ command: spawn undo
 command: spawn redo
 command: help
 </textarea><br>
-<input type="text" name="command">
+<input type="text" name="command" id="inputConsole">
 
 </div>
 

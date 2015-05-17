@@ -1,5 +1,5 @@
 // JavaScript Document
-function MeshMove(mesh){
+function MeshMove(mesh,cam){
 //<--Obejct movement activators -->
 //0- not moving
 //1 - enabled movement
@@ -65,21 +65,27 @@ this.setSpeed=function setSpeed (int) {
 this.update=function update (delta) {
   if(this.moveForward==1){
 	mesh.position.y += this.movementSpeed*delta;
+	cam.position.y += this.movementSpeed*delta;
   }
   if(this.moveBack==1){
 	mesh.position.y -= this.movementSpeed*delta;
+	cam.position.y -= this.movementSpeed*delta;
   }
   if(this.moveLeft==1){
 	mesh.position.x -= this.movementSpeed*delta;
+	cam.position.x -= this.movementSpeed*delta;
   }
   if(this.moveRight==1){
 	mesh.position.x += this.movementSpeed*delta; 
+	cam.position.x += this.movementSpeed*delta; 
   }
    if(this.moveUp==1){
 	mesh.position.z += this.movementSpeed*delta;
+	cam.position.z += this.movementSpeed*delta;
   }
   if(this.moveDown==1){
 	mesh.position.z -= this.movementSpeed*delta; 
+	cam.position.z -= this.movementSpeed*delta;
   }
    return mesh;
 }//<--
