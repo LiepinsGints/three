@@ -44,3 +44,21 @@ margin-bottom:1%;
 input {
 width:100%;
 }
+
+#editor{
+position: absolute;
+top:1em;
+margin-top:1%;
+color:#FC0;
+background-color:rgba(0,0,0,0.3); 
+padding:1em;
+border-bottom-left-radius:3px;
+border-bottom-right-radius:3px;
+border-top-right-radius:3px;
+border-top-left-radius:3px;
+margin-left:77%;
+width:20%;
+height:20%;
+float:right;
+	
+}

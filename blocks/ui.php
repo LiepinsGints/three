@@ -35,3 +35,12 @@ Light pos: <span class="labelValues">
 </form>
 </div>
 
+
+
+
+<div id="editor">
+<input type="checkbox" name="editor" value="true" onchange="editor.enable()" id="editorEnable">
+Editor sphera size:<br />
+<input type="range" name="editorSize" id="editorSize" onchange="editor.update()"  value="0" min="0" max="100">
+</div>
+

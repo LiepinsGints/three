@@ -1,5 +1,5 @@
 // JavaScript Document
-function MeshMove(mesh,cam){
+function MeshMove(mesh,cam, rotateCamera){
 //<--Obejct movement activators -->
 //0- not moving
 //1 - enabled movement
@@ -9,6 +9,12 @@ this.moveLeft=0;
 this.moveRight=0;
 this.moveUp=0;
 this.moveDown=0;
+
+//start position
+rotateCamera.update(cam,mesh.position.x,mesh.position.y,mesh.position.z,60,60,1,-1,0);
+cam.up = new THREE.Vector3(0,0,1);
+cam.lookAt(new THREE.Vector3(mesh.position.x,mesh.position.y,mesh.position.z));
+
 
 this.movementSpeed=10;
 /*Activate deactivate movement*/
@@ -63,29 +69,70 @@ this.setSpeed=function setSpeed (int) {
 }
 /*Update mesh movement */
 this.update=function update (delta) {
+	var a = new THREE.Vector2(mesh.position.x-cam.position.x, mesh.position.y-cam.position.y );
+	a.normalize();
   if(this.moveForward==1){
-	mesh.position.y += this.movementSpeed*delta;
-	cam.position.y += this.movementSpeed*delta;
+	//mesh.position.y += this.movementSpeed*delta;
+		//First of all we create a matrix and put the rotation of the cube into it
+     	//rotObjectMatrix = new THREE.Matrix4();
+     	//rotObjectMatrix.makeRotationFromQuaternion(cam.quaternion);
+     	//Next we just have to apply a rotation to the quaternion using the created matrix
+     	//mesh.quaternion.setFromRotationMatrix(rotObjectMatrix);
+		//mesh.rotation.z=cam.rotation.z;
+	
+	
+	mesh.position.x += this.movementSpeed*delta*a.x;
+	mesh.position.y += this.movementSpeed*delta*a.y;
+	
+	cam.position.x += this.movementSpeed*delta*a.x;
+	cam.position.y += this.movementSpeed*delta*a.y;
+	
+	//mesh.translateY( this.movementSpeed*delta );
+	//cam.translateY( this.movementSpeed*delta );
+	//cam.position.y += this.movementSpeed*delta;
   }
   if(this.moveBack==1){
-	mesh.position.y -= this.movementSpeed*delta;
-	cam.position.y -= this.movementSpeed*delta;
+	//mesh.position.y -= this.movementSpeed*delta;
+	//mesh.translateY( this.movementSpeed*delta*(-1) );
+	//cam.translateY( this.movementSpeed*delta*(-1) );
+	//cam.position.y -= this.movementSpeed*delta;
+	mesh.position.x -= this.movementSpeed*delta*a.x;
+	mesh.position.y -= this.movementSpeed*delta*a.y;
+	
+	cam.position.x -= this.movementSpeed*delta*a.x;
+	cam.position.y -= this.movementSpeed*delta*a.y;
   }
   if(this.moveLeft==1){
-	mesh.position.x -= this.movementSpeed*delta;
-	cam.position.x -= this.movementSpeed*delta;
+	//mesh.position.x -= this.movementSpeed*delta;
+	//mesh.translateX( this.movementSpeed*delta*(-1) );
+	//cam.translateX( this.movementSpeed*delta*(-1) );
+	//cam.position.x -= this.movementSpeed*delta;
+	rotateCamera.update(cam,mesh.position.x,mesh.position.y,mesh.position.z,1,60,2,-1,0);
+	cam.up = new THREE.Vector3(0,0,1);
+	cam.lookAt(new THREE.Vector3(mesh.position.x,mesh.position.y,mesh.position.z));
+	mesh.rotation.z+=1* Math.PI / 180;
   }
   if(this.moveRight==1){
-	mesh.position.x += this.movementSpeed*delta; 
-	cam.position.x += this.movementSpeed*delta; 
+	//mesh.position.x += this.movementSpeed*delta; 
+	//mesh.translateX( this.movementSpeed*delta );
+	//cam.translateX( this.movementSpeed*delta );
+	//cam.position.x += this.movementSpeed*delta;
+	rotateCamera.update(cam,mesh.position.x,mesh.position.y,mesh.position.z,1,60,2,1,0);
+	cam.up = new THREE.Vector3(0,0,1);
+	cam.lookAt(new THREE.Vector3(mesh.position.x,mesh.position.y,mesh.position.z));
+	mesh.rotation.z+=-1* Math.PI / 180;
   }
    if(this.moveUp==1){
-	mesh.position.z += this.movementSpeed*delta;
-	cam.position.z += this.movementSpeed*delta;
+	//mesh.position.z += this.movementSpeed*delta;
+	mesh.translateZ( this.movementSpeed*delta );
+	cam.translateZ( this.movementSpeed*delta );
+	//cam.position.z += this.movementSpeed*delta;
   }
   if(this.moveDown==1){
-	mesh.position.z -= this.movementSpeed*delta; 
-	cam.position.z -= this.movementSpeed*delta;
+	//mesh.position.z -= this.movementSpeed*delta; 
+	mesh.translateZ( this.movementSpeed*delta*(-1) );
+	cam.translateZ( this.movementSpeed*delta*(-1) );
+	//cam.position.z -= this.movementSpeed*delta;
   }
    return mesh;
 }//<--

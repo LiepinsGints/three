@@ -15,8 +15,9 @@
 <script type="text/javascript" src="js/ConsoleCommands.js"></script>
 <script type="text/javascript" src="js/Controls.js"></script>
 <script type="text/javascript" src="js/ObjectSpawns.js"></script>
-
+<script type="text/javascript" src="js/Editor.js"></script>
 <!-- some tutorial https://stemkoski.github.io/Three.js/#mesh-movement-->
+<!--free models https://clara.io/view/19a8b999-4807-4252-be15-043b1f6e265c-->
 </head>
 <body>
 <?php
@@ -102,8 +103,8 @@ texture2.wrapT = THREE.RepeatWrapping;
 texture2.repeat.set( 100, 100 ); 
 var planeW=1000;
 var planeH=1000; 
-var planeWs=200;
-var planeHs=200;
+var planeWs=300;
+var planeHs=300;
 var planeGeo =  new THREE.PlaneGeometry(planeW,planeH,planeWs,planeHs);
 var planeMat = new THREE.MeshLambertMaterial( { map : texture } );
 var planeMat2 = new THREE.MeshLambertMaterial( { map : texture2 } );
@@ -125,7 +126,7 @@ scene.add( plane );
 
 //var camPlayer= new CameraPlayer(cube,camera);
 var delta;
-var meshMove = new  MeshMove(cube,camera);
+var meshMove = new  MeshMove(cube,camera,rotateCamera);
 meshMove.setSpeed(30);//30
 var planePos = new PlanePos();//<-- for nearest vertice and segment calculation
 var temp=planePos.getSegment(planeW, planeH, planeWs, planeHs,cube.position.x,cube.position.y);
@@ -208,6 +209,20 @@ if(cameraMoveX==1){
   //  planeGeo.faces[ i ].materialIndex = 1;
 //}
 /******************** PLAYER FUNCTIONS END ********************/
+
+/*************************************************************/
+//Editor environment
+var wire = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe:true } );
+var spheraEditor = new THREE.SphereGeometry( 5, 32, 32 );
+var spheraEditorMesh = new THREE.Mesh(spheraEditor, wire);
+
+var editor = new Editor(spheraEditorMesh,scene,'editorSize','outputConsole','editorEnable');
+//var x = document.getElementById("myCheck").checked;
+	
+
+
+
+/***********************************/
 //--->collisions test
 var output=document.getElementById('outputConsole');
 
@@ -221,23 +236,18 @@ var directionList = [];
 	var wireMaterial = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe:true } );
 	
 	var wall = new THREE.Mesh(wallGeometry, wallMaterial);
-	wall.position.set(100, 50, -100);
+	wall.position.set(100, 50, 10);
 	scene.add(wall);
 	collidableMeshList.push(wall);
-	var wall = new THREE.Mesh(wallGeometry, wireMaterial);
-	wall.position.set(100, 50, -100);
-	scene.add(wall);
+
 	
 	var wall2 = new THREE.Mesh(wallGeometry, wallMaterial);
-	wall2.position.set(-150, 50, 0);
+	wall2.position.set(-150, 50, 5);
 	wall2.rotation.y = 3.14159 / 2;
 	scene.add(wall2);
 	collidableMeshList.push(wall2);
-	var wall2 = new THREE.Mesh(wallGeometry, wireMaterial);
-	wall2.position.set(-150, 50, 0);
-	wall2.rotation.y = 3.14159 / 2;
-	scene.add(wall2);
 
+   // collidableMeshList.push(plane);
 // collision detection:
 	//   determines if any of the rays from the cube's origin to each vertex
 	//		intersects any face of a mesh in the array of target meshes
@@ -247,7 +257,8 @@ var directionList = [];
 function collide()
 {
 var originPoint = cube.position.clone();
-
+	var a = new THREE.Vector2(cube.position.x-camera.position.x, cube.position.y-camera.position.y );
+	a.normalize();
 	
 	
 	for (var vertexIndex = 0; vertexIndex < cube.geometry.vertices.length; vertexIndex++)
@@ -258,9 +269,20 @@ var originPoint = cube.position.clone();
 		
 		var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
 		var collisionResults = ray.intersectObjects( collidableMeshList );
-		if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
-			
+		
+		
+		/*for ( var intersect in collisionResults ) {
+
+		intersect.object.material.color = new THREE.Color( 0xff0000 );
+	
+		}*/
+		
+		if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
+			 //collisionResults[0].object.material.color = new THREE.Color( 0xff0000 );
+			 	collisionResults[0].object.position.x += 1*a.x;
+				collisionResults[0].object.position.y += 1*a.y;
 			 output.value+="Hit \n"
+			}
 	}	
 }
 ///<-- colissions end
@@ -273,6 +295,7 @@ delta = clock.getDelta();
 update(delta);
 rotateLight.update(lightPoint,cube.position.x,cube.position.y,cube.position.z,90*delta,50,2,1,1);
 collide();
+
 //cameraFollow
 
 

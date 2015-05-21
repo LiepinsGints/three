@@ -6,31 +6,33 @@ function keyDown(event){
     break;
     case 38 : // up arrow  
 	 meshMove.setForward(1);
+	 //cube.translateX( -1 );
     break;
     case 39 : // right arrow 
      meshMove.setRight(1);
     break;
     case 40 : //down arrow
-     meshMove.setBack(1);
+    // cube.translateX( 1 );
+	 meshMove.setBack(1);
     break;
 	//rotate cube
 	case 45 : //insert
-     camera.rotation.x+=-1* Math.PI / 180;
+     cube.rotation.x+=-1* Math.PI / 180;
     break; 
 	case 46 : //insert
-     camera.rotation.x+=1* Math.PI / 180;
+     cube.rotation.x+=1* Math.PI / 180;
     break; 
 	case 36 : //insert
-     camera.rotation.y+=-1* Math.PI / 180;
+     cube.rotation.y+=-1* Math.PI / 180;
     break; 
 	case 35 : //insert
-     camera.rotation.y+=1* Math.PI / 180;
+     cube.rotation.y+=1* Math.PI / 180;
     break; 
 	case 33 : //insert
-     camera.rotation.z+=-1* Math.PI / 180;
+     cube.rotation.z+=-1* Math.PI / 180;
     break; 
 	case 34 : //insert
-     camera.rotation.z+=1* Math.PI / 180;
+     cube.rotation.z+=1* Math.PI / 180;
     break; 
 	///end rotate
 	case 97 : //x axes camera
