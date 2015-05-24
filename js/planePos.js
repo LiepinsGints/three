@@ -33,6 +33,8 @@ return(this.segment+(Math.ceil(this.segment/planeWs)-1));
 	
 }//<--
 
+
+
 	
 	
 	

@@ -150,11 +150,11 @@ document.getElementById("MousePos").innerHTML="x: "+x +"y: "+y;
 	//camera.rotation.y = 45 * Math.PI / 180;
 }//<--
 function mouseDown(event){
-cameraMoveX=1;
+//cameraMoveX=1;
 	//meshMove.setForward(1);
 }
 function mouseUp(event){
-cameraMoveX=0;
+//cameraMoveX=0;
 }
 
 //<-- camera movement script end
@@ -214,9 +214,11 @@ if(cameraMoveX==1){
 //Editor environment
 var wire = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe:true } );
 var spheraEditor = new THREE.SphereGeometry( 5, 32, 32 );
-var spheraEditorMesh = new THREE.Mesh(spheraEditor, wire);
+spheraEditorMesh = new THREE.Mesh(spheraEditor, wire);
 
 var editor = new Editor(spheraEditorMesh,scene,'editorSize','outputConsole','editorEnable');
+  
+    editor.collisionPlane(plane,300,300,cube,camera);
 //var x = document.getElementById("myCheck").checked;
 	
 
@@ -296,6 +298,8 @@ update(delta);
 rotateLight.update(lightPoint,cube.position.x,cube.position.y,cube.position.z,90*delta,50,2,1,1);
 collide();
 
+editor.follow(cube.position.x, cube.position.y, cube.position.z-6/2);   
+   
 //cameraFollow
 
 
