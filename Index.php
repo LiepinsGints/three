@@ -92,7 +92,7 @@ scene.fog = new THREE.FogExp2( 0xFFFFFF, 0.0019 );
 	scene.add(skyBox);
 //-->create plane start
 //texture 1
-var texture = THREE.ImageUtils.loadTexture( "img/textures/Grass/Grass1.png" );
+var texture = THREE.ImageUtils.loadTexture( "img/textures/Grass/Grass4.png" );
 texture.wrapS = THREE.RepeatWrapping; 
 texture.wrapT = THREE.RepeatWrapping;
 texture.repeat.set( 100, 100 ); 
@@ -101,16 +101,17 @@ var texture2 = THREE.ImageUtils.loadTexture( "img/textures/Roads/road1.jpg" );
 texture2.wrapS = THREE.RepeatWrapping; 
 texture2.wrapT = THREE.RepeatWrapping;
 texture2.repeat.set( 100, 100 ); 
+    //1882 *1377
 var planeW=1000;
 var planeH=1000; 
 var planeWs=300;
 var planeHs=300;
 var planeGeo =  new THREE.PlaneGeometry(planeW,planeH,planeWs,planeHs);
-var planeMat = new THREE.MeshLambertMaterial( { map : texture } );
+ 
+var planeMat = new THREE.MeshPhongMaterial( { map : texture } );
 var planeMat2 = new THREE.MeshLambertMaterial( { map : texture2 } );
 planeGeo.materials = [ planeMat,planeMat2];
-
-var plane = new THREE.Mesh(planeGeo, new THREE.MeshFaceMaterial( planeGeo.materials ));
+var plane = new THREE.Mesh(planeGeo, new THREE.MeshFaceMaterial( planeGeo.materials ));    
 //planeGeo.faces[4950].materialIndex = 1;
 
 scene.add( plane );

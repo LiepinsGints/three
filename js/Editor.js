@@ -73,7 +73,7 @@ this.editPlaneSphera=function editPlaneSphera(plane,planeWs,planeHs,sphera,heigh
     vYCube=Math.abs(Math.floor((plane.geometry.vertices[startVertice].y-spheraV2[1])/segmentHsize));
     //increment vertices by some value
     for(j=0;j<vYCube;j++){
-        startVertice+=verticesW;
+        if(j!=0)startVertice+=verticesW;
         for(i=startVertice;i<startVertice+vXCube;i++){
             plane.geometry.vertices[i].z+=heightIncrement;
         
@@ -81,7 +81,7 @@ this.editPlaneSphera=function editPlaneSphera(plane,planeWs,planeHs,sphera,heigh
         }
     }
         
-    
+    /*
      output.value+="verticesW:"+verticesW+ "\n"
     +"verticesH:"+verticesH+ "\n"
     +"totalVertices:"+totalVertices+ "\n"
@@ -97,7 +97,7 @@ this.editPlaneSphera=function editPlaneSphera(plane,planeWs,planeHs,sphera,heigh
     +"vXCube:"+vXCube+ "\n"
     +"vYCube:"+vYCube+ "\n" 
      ;
-      
+      */
     planeGeo.verticesNeedUpdate = true;
     //plane first vertice coordinate and last vertice coordinates
     //plane.geometry.vertices[verticeId].z
@@ -123,53 +123,88 @@ this.collisionPlane=function collisionPlane(plane,planeWs,planeHs,mesh,camera){
     //alert(sphera.geometry.boundingSphere.radius*sphera.scale.x);
     //mesh.geometry.computeBoundingSphere();
     mesh.geometry.computeBoundingBox();
-    spheraRadius=(mesh.geometry.boundingBox.max.x-mesh.geometry.boundingBox.min.x)/2;
-    cubeV1=[mesh.position.x-spheraRadius,mesh.position.y+spheraRadius];
+    spheraRadius=4.24;
+    //cubeV1=[mesh.position.x-spheraRadius,mesh.position.y+spheraRadius];
     //spheraRadius=Math.sqrt(Math.pow((cubeV1[0]-mesh.position.x),2)+Math.pow((cubeV1[1]-mesh.position.x),2));
     //alert(mesh.geometry.boundingBox.max);
     
     spheraV1=[mesh.position.x-spheraRadius , mesh.position.y+spheraRadius];                                           
     spheraV2=[mesh.position.x+spheraRadius , mesh.position.y-spheraRadius];                                           
     //vertice coord x axes
-    xPoz=Math.ceil(Math.abs((plane.geometry.vertices[0].x-spheraV1[0])/segmentWsize));
+    xPoz=Math.floor(Math.abs((plane.geometry.vertices[0].x-spheraV1[0])/segmentWsize));
     yPoz=Math.floor(Math.abs((plane.geometry.vertices[0].y-spheraV1[1])/segmentHsize));
+    //alert(Math.ceil(Math.abs((plane.geometry.vertices[0].y-spheraV1[1])/segmentHsize));
     //Get left-upper vertice index
     startVertice=xPoz+yPoz*verticesW;    
     //get ammount of vertices on x axes
+    //spheraV1=[plane.geometry.vertices[startVertice].x,plane.geometry.vertices[startVertice].y];
+    //spheraV2=[spheraV1[0]+(mesh.position.x-spheraV1[0])*2,spheraV1[1]+(mesh.position.y-spheraV1[1])*2];
+   // alert("v1"+spheraV1[0]+":"+spheraV1[1]+"\n "+"v2"+spheraV2[0]+":"+spheraV2[1]+"\n ");
     vXCube=Math.abs(Math.ceil((plane.geometry.vertices[startVertice].x-spheraV2[0])/segmentWsize));
     //get ammount of vertices on y axes
-    vYCube=Math.abs(Math.floor((plane.geometry.vertices[startVertice].y-spheraV2[1])/segmentHsize));
+    vYCube=Math.abs(Math.ceil((plane.geometry.vertices[startVertice].y-spheraV2[1])/segmentHsize));
     //increment vertices by some value
+    
+    //test cowered area
+       /* var geometry = new THREE.PlaneGeometry( spheraRadius*2, spheraRadius*2, 2,2 );
+        var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+        var planex = new THREE.Mesh( geometry, material );
+        planex.position.z=2;
+        scene.add( planex );*/
     
     //
     verticeHighest=startVertice;
-    verticeMedium=startVertice;
-    verticeLow=startVertice;
-    
+    verticeMedium=-1;
+    verticeLow=-1;
+    /*output.value+="**********coords start \n";*/
     for(j=0;j<vYCube;j++){
-        startVertice+=verticesW;
+        if(j!=0)startVertice+=verticesW;
         for(i=startVertice;i<startVertice+vXCube;i++){
-           
-            if(plane.geometry.vertices[i].z>plane.geometry.vertices[verticeHighest].z){
-                verticeHighest=i;
-                
-            }else if(plane.geometry.vertices[i].z>plane.geometry.vertices[verticeMedium].z ||verticeHighest==verticeMedium){
-                verticeMedium=i;
-            }else if(plane.geometry.vertices[i].z>plane.geometry.vertices[verticeLow].z ||verticeHighest==verticeLow){
+            
+          if(plane.geometry.vertices[i].z>plane.geometry.vertices[verticeHighest].z){
+                if(verticeMedium==-1){
+                    verticeMedium=verticeHighest;
+                    verticeHighest=i;
+                }else{
+                 
+                    verticeLow=verticeMedium;
+                    verticeMedium=verticeHighest;
+                    verticeHighest=i;
+                }
               
-               if((plane.geometry.vertices[verticeHighest].x==plane.geometry.vertices[verticeHighest].x &&
-                  plane.geometry.vertices[verticeHighest].x==plane.geometry.vertices[i].x) 
+          }else if(i!=verticeHighest && verticeMedium==(-1)){
+            verticeMedium=i;   
+          }else if(verticeMedium!=-1 && plane.geometry.vertices[i].z>plane.geometry.vertices[verticeMedium].z ){
+                verticeLow=verticeMedium;
+                verticeMedium=i;
+          }else if(i!=verticeHighest && i!=verticeMedium && verticeLow==-1){
+              if((plane.geometry.vertices[verticeHighest].x==plane.geometry.vertices[verticeMedium].x 
+                 && plane.geometry.vertices[i].x==plane.geometry.vertices[verticeHighest].x)
+                 ||
+                 (plane.geometry.vertices[verticeHighest].y==plane.geometry.vertices[verticeMedium].y 
+                 && plane.geometry.vertices[i].y==plane.geometry.vertices[verticeHighest].y)
+                ){}else{
+                verticeLow=i;}
+          }else if(verticeLow !=-1 && plane.geometry.vertices[i].z>=plane.geometry.vertices[verticeLow].z){
+               if((plane.geometry.vertices[verticeHighest].x==plane.geometry.vertices[verticeMedium].x 
+                 && plane.geometry.vertices[i].x==plane.geometry.vertices[verticeHighest].x)
                   ||
-                  (plane.geometry.vertices[verticeHighest].y==plane.geometry.vertices[verticeHighest].y &&
-                  plane.geometry.vertices[verticeHighest].y==plane.geometry.vertices[i].y) 
-                 ) {}else verticeLow=i;
-                        
-                
-            }
-        
+                 (plane.geometry.vertices[verticeHighest].y==plane.geometry.vertices[verticeMedium].y 
+                 && plane.geometry.vertices[i].y==plane.geometry.vertices[verticeHighest].y)
+                ){}else{
+                                verticeLow=i;
+               }
+          }
+            
+           
+       /*output.value+="vertice:"+i+" x:"+plane.geometry.vertices[i].x+" y:"+plane.geometry.vertices[i].y
+            +" z:"+plane.geometry.vertices[i].z+"\n"+
+                "************coords end******** \n";*/
         
         }
     }
+ /*  output.value+="-------------------------- \n";*/
+    //alert(verticeHighest+":"+verticeMedium+":"+verticeLow);
     //Get plane from 3 points
      vectorA=[plane.geometry.vertices[verticeMedium].x-plane.geometry.vertices[verticeHighest].x,
               plane.geometry.vertices[verticeMedium].y-plane.geometry.vertices[verticeHighest].y,
@@ -190,9 +225,31 @@ this.collisionPlane=function collisionPlane(plane,planeWs,planeHs,mesh,camera){
     zValue=0;
     if(k!=0){   
     zValue=(i*mesh.position.x+j*mesh.position.y+d)/k*(-1);
+    camera.position.z+=zValue-mesh.position.z+Math.abs(mesh.geometry.boundingBox.max.z-mesh.geometry.boundingBox.min.z)/2;
+    mesh.position.z=zValue+Math.abs(mesh.geometry.boundingBox.max.z-mesh.geometry.boundingBox.min.z)/2;    
+      /*  output.value+="--->non zero k: \n"+
+        verticeHighest+"->"+plane.geometry.vertices[verticeHighest].x
+         +"|"+plane.geometry.vertices[verticeHighest].y
+         +"|"+plane.geometry.vertices[verticeHighest].z+"\n"
+    +verticeMedium+"->"+plane.geometry.vertices[verticeMedium].x+"|"+plane.geometry.vertices[verticeMedium].y
+    +"|"+plane.geometry.vertices[verticeMedium].z+"\n"
+    +verticeLow+plane.geometry.vertices[verticeLow].x
+         +"|"+plane.geometry.vertices[verticeLow].y
+         +"|"+plane.geometry.vertices[verticeLow].z+"\n"
+    +"************\n"; */   
+    }else{
     camera.position.z+=zValue-mesh.position.z+spheraRadius;
     mesh.position.z=zValue+spheraRadius;    
-        
+    output.value+="--->zero k: \n"+
+        verticeHighest+"->"+plane.geometry.vertices[verticeHighest].x
+         +"|"+plane.geometry.vertices[verticeHighest].y
+         +"|"+plane.geometry.vertices[verticeHighest].z+"\n"
+    +verticeMedium+"->"+plane.geometry.vertices[verticeMedium].x+"|"+plane.geometry.vertices[verticeMedium].y
+    +"|"+plane.geometry.vertices[verticeMedium].z+"\n"
+    +verticeLow+plane.geometry.vertices[verticeLow].x
+         +"|"+plane.geometry.vertices[verticeLow].y
+         +"|"+plane.geometry.vertices[verticeLow].z+"\n"
+    +"************\n";   
     }
     /*
         output.value+=
