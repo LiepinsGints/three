@@ -40,6 +40,9 @@ this.follow =function(x,y,z){
         object.position.y=y;
         object.position.z=z;
 }
+this.distance =function distance(x,y,z){
+       return Math.sqrt(x*x +y*y+z*z);
+}
 // planee editor sphera
 this.editPlaneSphera=function editPlaneSphera(plane,planeWs,planeHs,sphera,heightIncrement){
     //get vertice count x axes
@@ -70,11 +73,17 @@ this.editPlaneSphera=function editPlaneSphera(plane,planeWs,planeHs,sphera,heigh
     //get ammount of vertices on x axes
     vXCube=Math.abs(Math.ceil((plane.geometry.vertices[startVertice].x-spheraV2[0])/segmentWsize));
     //get ammount of vertices on y axes
-    vYCube=Math.abs(Math.floor((plane.geometry.vertices[startVertice].y-spheraV2[1])/segmentHsize));
+    vYCube=Math.abs(Math.ceil((plane.geometry.vertices[startVertice].y-spheraV2[1])/segmentHsize));
     //increment vertices by some value
     for(j=0;j<vYCube;j++){
         if(j!=0)startVertice+=verticesW;
         for(i=startVertice;i<startVertice+vXCube;i++){
+            d=this.distance(
+                (plane.geometry.vertices[i].x-mesh.position.x),
+                (plane.geometry.vertices[i].y-mesh.position.y),
+                (plane.geometry.vertices[i].z-mesh.position.z)     
+            );
+            if(d<=spheraRadius)
             plane.geometry.vertices[i].z+=heightIncrement;
         
         
@@ -157,54 +166,165 @@ this.collisionPlane=function collisionPlane(plane,planeWs,planeHs,mesh,camera){
     verticeMedium=-1;
     verticeLow=-1;
     /*output.value+="**********coords start \n";*/
+    
+    //get highest vertices
+    st=startVertice;
+    hVertices= new Array();
+    check=1;//if 1 then all vertices same height
     for(j=0;j<vYCube;j++){
         if(j!=0)startVertice+=verticesW;
-        for(i=startVertice;i<startVertice+vXCube;i++){
+        for(i=startVertice;i<startVertice+vXCube;i++){        
+              d=this.distance(
+                (plane.geometry.vertices[i].x-mesh.position.x),
+                (plane.geometry.vertices[i].y-mesh.position.y),
+                (plane.geometry.vertices[i].z-mesh.position.z)     
+            );
+            if(d<=spheraRadius){
+            if(plane.geometry.vertices[i].z>plane.geometry.vertices[verticeHighest].z){
+            verticeHighest=i;
+            }
             
-          if(plane.geometry.vertices[i].z>plane.geometry.vertices[verticeHighest].z){
-                if(verticeMedium==-1){
-                    verticeMedium=verticeHighest;
-                    verticeHighest=i;
-                }else{
-                 
-                    verticeLow=verticeMedium;
-                    verticeMedium=verticeHighest;
-                    verticeHighest=i;
-                }
-              
-          }else if(i!=verticeHighest && verticeMedium==(-1)){
-            verticeMedium=i;   
-          }else if(verticeMedium!=-1 && plane.geometry.vertices[i].z>plane.geometry.vertices[verticeMedium].z ){
-                verticeLow=verticeMedium;
-                verticeMedium=i;
-          }else if(i!=verticeHighest && i!=verticeMedium && verticeLow==-1){
-              if((plane.geometry.vertices[verticeHighest].x==plane.geometry.vertices[verticeMedium].x 
-                 && plane.geometry.vertices[i].x==plane.geometry.vertices[verticeHighest].x)
-                 ||
-                 (plane.geometry.vertices[verticeHighest].y==plane.geometry.vertices[verticeMedium].y 
-                 && plane.geometry.vertices[i].y==plane.geometry.vertices[verticeHighest].y)
-                ){}else{
-                verticeLow=i;}
-          }else if(verticeLow !=-1 && plane.geometry.vertices[i].z>=plane.geometry.vertices[verticeLow].z){
-               if((plane.geometry.vertices[verticeHighest].x==plane.geometry.vertices[verticeMedium].x 
-                 && plane.geometry.vertices[i].x==plane.geometry.vertices[verticeHighest].x)
-                  ||
-                 (plane.geometry.vertices[verticeHighest].y==plane.geometry.vertices[verticeMedium].y 
-                 && plane.geometry.vertices[i].y==plane.geometry.vertices[verticeHighest].y)
-                ){}else{
-                                verticeLow=i;
-               }
-          }
-            
-           
-       /*output.value+="vertice:"+i+" x:"+plane.geometry.vertices[i].x+" y:"+plane.geometry.vertices[i].y
-            +" z:"+plane.geometry.vertices[i].z+"\n"+
-                "************coords end******** \n";*/
+            if(plane.geometry.vertices[i].z!=plane.geometry.vertices[startVertice].z){
+             check=0;   
+            }
+            }
         
         }
     }
+   //get medium vertice
+    if(check==0){
+    startVertice=st;
+    verticeTemp=[-1,0];
+     for(j=0;j<vYCube;j++){
+        if(j!=0)startVertice+=verticesW;
+        for(i=startVertice;i<startVertice+vXCube;i++){   
+            
+            if(plane.geometry.vertices[i].z==plane.geometry.vertices[verticeHighest].z){
+                hVertices.push(i);
+               // alert("here");
+            }
+            if(plane.geometry.vertices[i].z<plane.geometry.vertices[verticeHighest].z){
+                
+                 m=(plane.geometry.vertices[verticeHighest].z-plane.geometry.vertices[i].z)
+                 
+                 / (plane.geometry.vertices[verticeHighest].x-plane.geometry.vertices[i].x);
+                
+                z=m*(mesh.position.x-plane.geometry.vertices[i].x)+plane.geometry.vertices[i].z;
+                d=Math.abs(z-mesh.position.z);
+                if(verticeTemp[0]==-1){
+                    verticeTemp[0]=i;
+                    verticeTemp[1]=d;    
+                }
+                else if(verticeTemp[1]>d){
+                    verticeTemp[0]=i;
+                    verticeTemp[1]=d;
+                }
+                //verticeTemp=[i,;
+            }
+        
+        }
+    }verticeMedium=verticeTemp[0];
+        startVertice=st;
+        verticeTemp=[-1,0];
+            verticeH1=[-1,0];
+            verticeH2=[-1,0];
+            if(hVertices.length>1){
+                for(i=0;i<hVertices.length;i++){
+                    if(verticeH1[0]==-1){
+                        verticeH1[0]=i;
+                        d=this.distance(
+                        (plane.geometry.vertices[hVertices[i]].x-plane.geometry.vertices[verticeMedium].x),
+                        (plane.geometry.vertices[hVertices[i]].y-plane.geometry.vertices[verticeMedium].y),
+                        (plane.geometry.vertices[hVertices[i]].z-plane.geometry.vertices[verticeMedium].z)     
+                        );
+                        output.value+="vertice  "+i +">distance>"+d+"\n";
+                        verticeH1[1]=d;
+                        }else{
+                         
+                             d=this.distance(
+                             (plane.geometry.vertices[hVertices[i]].x-plane.geometry.vertices[verticeMedium].x),
+                             (plane.geometry.vertices[hVertices[i]].y-plane.geometry.vertices[verticeMedium].y),
+                             (plane.geometry.vertices[hVertices[i]].z-plane.geometry.vertices[verticeMedium].z)     
+                              );
+                            if(d<verticeH1[1]){
+                                verticeH2[0]=verticeH1[0];
+                                verticeH2[1]=verticeH1[1];
+                                verticeH1[0]=i;
+                                verticeH1[1]=d;       
+                            }else if(d==verticeH1[1] && i!=verticeH1[0] ){
+                                verticeH2[0]=i;
+                                verticeH2[1]=d;   
+                            }else if(d>verticeH1[1] && verticeH2[0]==-1 && i!=verticeH1[0]){
+                                verticeH2[0]=i;
+                                verticeH2[1]=d; 
+                            }
+                            else if(d>verticeH1[1] && verticeH2[1]>d && i!=verticeH1[0]){
+                                verticeH2[0]=i;
+                                verticeH2[1]=d; 
+                            }
+                           output.value+="vertice  "+i +">distance>"+d+"\n"; 
+                            
+                        }
+                    
+                
+              }//for
+               output.value+="vertice from array "+verticeH1[0] +">>"+verticeH2[0]+"\n"; 
+                
+                verticeHighest=hVertices[verticeH1[0]];
+                verticeLow=hVertices[verticeH2[0]];
+                if(vYCube*vXCube/2<hVertices.length){
+                  
+                    for(i=0;i<hVertices.length;i++){
+                        if(i!=verticeH1[0]&& i!=verticeH2[0])
+                            verticeMedium=i;   
+                    }
+                }
+                //lookup for farest medium vertice
+                
+                
+                //output.value+="-1->"+verticeHighest+":"+verticeMedium+":"+verticeLow;
+           }//<--IF h verticeS>1 end
+        else{
+        //get low vertice
+     for(j=0;j<vYCube;j++){
+        if(j!=0)startVertice+=verticesW;
+        for(i=startVertice;i<startVertice+vXCube;i++){        
+            if(plane.geometry.vertices[i].z<=plane.geometry.vertices[verticeMedium].z && i!=verticeMedium){
+                
+                 m=(plane.geometry.vertices[verticeHighest].z-plane.geometry.vertices[i].z)
+                 
+                 / (plane.geometry.vertices[verticeHighest].x-plane.geometry.vertices[i].x);
+                
+                z=m*(mesh.position.x-plane.geometry.vertices[i].x)+plane.geometry.vertices[i].z;
+                d=Math.abs(z-mesh.position.z);
+                if(verticeTemp[0]==-1){
+                    verticeTemp[0]=i;
+                    verticeTemp[1]=d;    
+                }
+                else if(verticeTemp[1]>d){
+                    verticeTemp[0]=i;
+                    verticeTemp[1]=d;
+                }
+                //verticeTemp=[i,;
+            }
+        
+        }
+    } verticeLow =verticeTemp[0]; 
+        }
+    }else if(check==1){
+        verticeHighest=startVertice;
+        verticeMedium=startVertice+verticesW;
+        verticeLow=startVertice+vXCube-1;
+        
+    }
+    
+   // output.value+="StartVertice: "+startVertice+"\n";
+   for(i=0;i<hVertices.length;i++){
+    output.value+="vertice :"+hVertices[i]+" \n";
+    if(i==hVertices.length-1)output.value+="**********************************\n";
+   }
  /*  output.value+="-------------------------- \n";*/
-    //alert(verticeHighest+":"+verticeMedium+":"+verticeLow);
+    //output.value+="-2->"+verticeHighest+":"+verticeMedium+":"+verticeLow;
     //Get plane from 3 points
      vectorA=[plane.geometry.vertices[verticeMedium].x-plane.geometry.vertices[verticeHighest].x,
               plane.geometry.vertices[verticeMedium].y-plane.geometry.vertices[verticeHighest].y,
@@ -274,7 +394,7 @@ this.collisionPlane=function collisionPlane(plane,planeWs,planeHs,mesh,camera){
     
     
    
-    
+  output.scrollTop=output.scrollHeight;  
 
 }
 
