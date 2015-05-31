@@ -87,7 +87,7 @@ this.update=function update (delta) {
 	cam.position.x += this.movementSpeed*delta*a.x;
 	cam.position.y += this.movementSpeed*delta*a.y;
 	
-    editor.collisionPlane(plane,300,300,mesh,cam);   
+    editor.collisionPlane2(plane,300,300,mesh,6,6,cam);   
 	//mesh.translateY( this.movementSpeed*delta );
 	//cam.translateY( this.movementSpeed*delta );
 	//cam.position.y += this.movementSpeed*delta;
@@ -102,27 +102,29 @@ this.update=function update (delta) {
 	
 	cam.position.x -= this.movementSpeed*delta*a.x;
 	cam.position.y -= this.movementSpeed*delta*a.y;
-    editor.collisionPlane(plane,300,300,mesh,cam);  
+    editor.collisionPlane2(plane,300,300,mesh,6,6,cam);  
   }
   if(this.moveLeft==1){
 	//mesh.position.x -= this.movementSpeed*delta;
 	//mesh.translateX( this.movementSpeed*delta*(-1) );
 	//cam.translateX( this.movementSpeed*delta*(-1) );
 	//cam.position.x -= this.movementSpeed*delta;
-	rotateCamera.update(cam,mesh.position.x,mesh.position.y,mesh.position.z,1,60,2,-1,0);
+	rotateCamera.update(cam,mesh.position.x,mesh.position.y,mesh.position.z,-1,60,2,0);
 	cam.up = new THREE.Vector3(0,0,1);
 	cam.lookAt(new THREE.Vector3(mesh.position.x,mesh.position.y,mesh.position.z));
 	mesh.rotation.z+=1* Math.PI / 180;
+   // editor.collisionPlane2(plane,300,300,mesh,cam);  
   }
   if(this.moveRight==1){
 	//mesh.position.x += this.movementSpeed*delta; 
 	//mesh.translateX( this.movementSpeed*delta );
 	//cam.translateX( this.movementSpeed*delta );
 	//cam.position.x += this.movementSpeed*delta;
-	rotateCamera.update(cam,mesh.position.x,mesh.position.y,mesh.position.z,1,60,2,1,0);
+	rotateCamera.update(cam,mesh.position.x,mesh.position.y,mesh.position.z,1,60,2,0);
 	cam.up = new THREE.Vector3(0,0,1);
 	cam.lookAt(new THREE.Vector3(mesh.position.x,mesh.position.y,mesh.position.z));
 	mesh.rotation.z+=-1* Math.PI / 180;
+    //editor.collisionPlane2(plane,300,300,mesh,cam);  
   }
    if(this.moveUp==1){
 	//mesh.position.z += this.movementSpeed*delta;

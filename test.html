@@ -1,0 +1,111 @@
+<html>
+<head>
+<title>Tests</title>    
+  <script type="text/javascript" src="js/three.js"></script> 
+</head>
+ 
+    
+    
+<p id="output"></p>
+   
+    
+    
+    
+    
+    
+    
+<script>
+//calculate disatance between points
+function distance(v1,v2){
+   d=Math.sqrt((v1.x*v2.x+v1.y*v2.y+v1.z*v2.z));
+}
+var output = document.getElementById("output");    
+/*******************************************/
+/**********calculate plane points **********/
+/*******************************************/    
+center=new THREE.Vector3( 5, 3, 10 );
+//first row  
+vertices = new Array();    
+a=new THREE.Vector3( 0, 6, 0 ); 
+b=new THREE.Vector3( 2, 6, 0 ); 
+c=new THREE.Vector3( 4, 6, 0 ); 
+d=new THREE.Vector3( 6, 6, 0 ); 
+e=new THREE.Vector3( 8, 6, 0 ); 
+f=new THREE.Vector3( 10, 6, 0 );
+vertices.push(a);
+vertices.push(b);
+vertices.push(c);
+vertices.push(d);
+vertices.push(e);
+vertices.push(f);    
+//second row    
+g=new THREE.Vector3( 0, 4, 0 ); 
+h=new THREE.Vector3( 2, 4, 0 ); 
+i=new THREE.Vector3( 4, 4, 0 ); 
+j=new THREE.Vector3( 6, 4, 0 );
+k=new THREE.Vector3( 8, 4, 0 ); 
+l=new THREE.Vector3( 10, 4, 0 );  
+vertices.push(g);
+vertices.push(h);
+vertices.push(i);
+vertices.push(j);
+vertices.push(k);
+vertices.push(l);     
+//third row    
+m=new THREE.Vector3( 0, 2, 0 ); 
+n=new THREE.Vector3( 2, 2, 0 ); 
+o=new THREE.Vector3( 4, 2, 0 ); 
+p=new THREE.Vector3( 6, 2, 0 );
+r=new THREE.Vector3( 8, 2, 0 ); 
+s=new THREE.Vector3( 10, 2, 0 ); 
+vertices.push(m);
+vertices.push(n);
+vertices.push(o);
+vertices.push(p);
+vertices.push(r);
+vertices.push(s);     
+//fourth row    
+t=new THREE.Vector3( 0, 0, 0 ); 
+u=new THREE.Vector3( 2, 0, 0 ); 
+v=new THREE.Vector3( 4, 0, 0 ); 
+x=new THREE.Vector3( 6, 0, 0 );    
+z=new THREE.Vector3( 8, 0, 0 ); 
+w=new THREE.Vector3( 10, 0, 0 );
+vertices.push(t);
+vertices.push(u);
+vertices.push(v);
+vertices.push(x);
+vertices.push(z);
+vertices.push(w);     
+// algorithm part 1 check for first impact height
+firstImpactVerticeHeight=[vertices[0].z,0];
+verticesSame=0;//all vertices same height if 0 different else different    
+for(i=1;i<vertices.length;i++){
+    if(vertices[i].z>firstImpactVerticeHeight[0]){
+        firstImpactVerticeHeight[0]=vertices[i].z;
+        firstImpactVerticeHeight[1]=i;
+        verticesSame=1;
+    }else if(vertices[i].z<firstImpactVerticeHeight[0]){
+        verticesSame=1;
+    }
+}
+//
+if(verticesSame==0){
+ output.innerHTML=output.innerHTML+"All vertices same \n"; 
+}else{
+ output.innerHTML=output.innerHTML+"Not all vertices same \n";
+    
+    
+    
+}
+    
+    
+
+
+
+    
+    
+    
+    
+</script> 
+</html>

@@ -78,7 +78,7 @@ this.editPlaneSphera=function editPlaneSphera(plane,planeWs,planeHs,sphera,heigh
     for(j=0;j<vYCube;j++){
         if(j!=0)startVertice+=verticesW;
         for(i=startVertice;i<startVertice+vXCube;i++){
-            d=this.distance(
+            d=pythagor(
                 (plane.geometry.vertices[i].x-mesh.position.x),
                 (plane.geometry.vertices[i].y-mesh.position.y),
                 (plane.geometry.vertices[i].z-mesh.position.z)     
@@ -174,7 +174,7 @@ this.collisionPlane=function collisionPlane(plane,planeWs,planeHs,mesh,camera){
     for(j=0;j<vYCube;j++){
         if(j!=0)startVertice+=verticesW;
         for(i=startVertice;i<startVertice+vXCube;i++){        
-              d=this.distance(
+              d=pythagor(
                 (plane.geometry.vertices[i].x-mesh.position.x),
                 (plane.geometry.vertices[i].y-mesh.position.y),
                 (plane.geometry.vertices[i].z-mesh.position.z)     
@@ -232,7 +232,7 @@ this.collisionPlane=function collisionPlane(plane,planeWs,planeHs,mesh,camera){
                 for(i=0;i<hVertices.length;i++){
                     if(verticeH1[0]==-1){
                         verticeH1[0]=i;
-                        d=this.distance(
+                        d=pythagor(
                         (plane.geometry.vertices[hVertices[i]].x-plane.geometry.vertices[verticeMedium].x),
                         (plane.geometry.vertices[hVertices[i]].y-plane.geometry.vertices[verticeMedium].y),
                         (plane.geometry.vertices[hVertices[i]].z-plane.geometry.vertices[verticeMedium].z)     
@@ -241,7 +241,7 @@ this.collisionPlane=function collisionPlane(plane,planeWs,planeHs,mesh,camera){
                         verticeH1[1]=d;
                         }else{
                          
-                             d=this.distance(
+                             d=pythagor(
                              (plane.geometry.vertices[hVertices[i]].x-plane.geometry.vertices[verticeMedium].x),
                              (plane.geometry.vertices[hVertices[i]].y-plane.geometry.vertices[verticeMedium].y),
                              (plane.geometry.vertices[hVertices[i]].z-plane.geometry.vertices[verticeMedium].z)     
@@ -397,5 +397,129 @@ this.collisionPlane=function collisionPlane(plane,planeWs,planeHs,mesh,camera){
   output.scrollTop=output.scrollHeight;  
 
 }
+
+
+//Plane colissions 2
+/**********************************************************************************/
+
+
+this.collisionPlane2=function collisionPlane2(plane,planeWs,planeHs,mesh,width,height,camera){
+    
+    mesh.rotation.z=correctRotation(mesh.rotation.z);
+    //output.value+="Rotation: "+mesh.rotation.z+"\n";
+   // output.value+="mesh rotation degrees: "+ getDegrees(mesh.rotation.z)+"\n";
+    ct=quaternion(10,6,0,5,3,0,90,2,-1);
+    output.value+="point pos: x"+ct[0]+"y"+ct[1]+"z"+ct[2]+"\n";
+    dot=getDotProduct(-6,8,0,5,12,0);
+   // output.value+="dotproduct: "+dot+"\n";
+    if(inTriangle(0,6,0,0,0,0,11,0,0,10,1,1)==1){
+         output.value+="INSIDE :)\n";
+    }else{
+         output.value+="OUTSIDE :/ \n";
+    }
+    //mesh.geometry.computeBoundingBox();
+    //width=mesh.geometry.boundingBox.max.x-mesh.geometry.boundingBox.min.x;
+    //height=mesh.geometry.boundingBox.max.y-mesh.geometry.boundingBox.min.y;    
+    //output.value+="Bounding box width:"+width+" height"+ height+"\n";
+    //square vertices
+    //quaternion(x,y,z,Xc,Yc,Zc,angle,axes)
+    v1=quaternion(mesh.position.x-width/2,
+               mesh.position.y+height/2,
+               0,
+               mesh.position.x,
+               mesh.position.y,
+               mesh.position.z,
+               getDegrees(mesh.rotation.z),
+               2);
+    v2=quaternion(mesh.position.x+width/2,
+               mesh.position.y+height/2,
+               0,
+               mesh.position.x,
+               mesh.position.y,
+               mesh.position.z,
+               getDegrees(mesh.rotation.z),
+               2);
+    v3=quaternion(mesh.position.x+width/2,
+               mesh.position.y-height/2,
+               0,
+               mesh.position.x,
+               mesh.position.y,
+               mesh.position.z,
+               getDegrees(mesh.rotation.z),
+               2);
+    v4=quaternion(mesh.position.x-width/2,
+               mesh.position.y-height/2,
+               0,
+               mesh.position.x,
+               mesh.position.y,
+               mesh.position.z,
+               getDegrees(mesh.rotation.z),
+               2);
+    //rotate points based on mesh rotation in world
+   /* output.value+="v1 x:"+v1[0]+" y:"+v1[1]+"\n"+
+                  "v2 x:"+v2[0]+" y:"+v2[1]+"\n"+
+                  "v3 x:"+v3[0]+" y:"+v3[1]+"\n"+
+                  "v4 x:"+v4[0]+" y:"+v4[1]+"\n";
+    */
+    
+    //get vertice count x axes
+    verticesW=planeWs+1;
+    //get vertice count y axes
+    verticesH=planeHs+1;
+    //total vertices
+    totalVertices=verticesW*verticesH;                                           
+    //get plane width and height                                           
+    planeW=plane.geometry.vertices[0].x-plane.geometry.vertices[totalVertices-1].x;                                           
+    planeH=plane.geometry.vertices[0].y-plane.geometry.vertices[totalVertices-1].y;                                           
+    //get vertice dimensions
+    segmentWsize=planeW/planeWs;
+    segmentHsize=planeH/planeHs;                                      
+    //vertice coord x axes
+    xPoz=Math.floor(Math.abs((plane.geometry.vertices[0].x-v1[0])/segmentWsize));
+    yPoz=Math.floor(Math.abs((plane.geometry.vertices[0].y-v1[1])/segmentHsize));
+    //alert(Math.ceil(Math.abs((plane.geometry.vertices[0].y-spheraV1[1])/segmentHsize));
+    //Get left-upper vertice index
+    startVertice=xPoz+yPoz*verticesW;    
+    vXCube=Math.abs(Math.ceil((plane.geometry.vertices[startVertice].x-v3[0])/segmentWsize));
+    //get ammount of vertices on y axes
+    vYCube=Math.abs(Math.ceil((plane.geometry.vertices[startVertice].y-v3[1])/segmentHsize));
+    //get highest vertice
+    
+    
+    verticeHighest=startVertice;
+    verticeMedium=-1;
+    verticeLow=-1;    
+    //get highest vertices
+    st=startVertice;
+    hVertices= new Array();
+    check=1;//if 1 then all vertices same height
+    for(j=0;j<vYCube;j++){
+        if(j!=0)startVertice+=verticesW;
+        for(i=startVertice;i<startVertice+vXCube;i++){        
+              d=this.distance(
+                (plane.geometry.vertices[i].x-mesh.position.x),
+                (plane.geometry.vertices[i].y-mesh.position.y),
+                (plane.geometry.vertices[i].z-mesh.position.z)     
+            );
+            if(d<=spheraRadius){
+            if(plane.geometry.vertices[i].z>plane.geometry.vertices[verticeHighest].z){
+            verticeHighest=i;
+            }
+            
+            if(plane.geometry.vertices[i].z!=plane.geometry.vertices[startVertice].z){
+             check=0;   
+            }
+            }
+        
+        }
+    }
+    mesh.position.z=plane.geometry.vertices[verticeHighest].z+3;
+    
+    
+    
+    
+    output.scrollTop=output.scrollHeight; 
+    
+}//<-- col detection 2 end
 
 }

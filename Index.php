@@ -7,6 +7,7 @@
 
 <!--<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>-->
 <script type="text/javascript" src="js/three.js"></script>
+<script type="text/javascript" src="js/Math.js"></script>
 <script type="text/javascript" src="js/label.js"></script>
 <script type="text/javascript" src="js/CameraPlayer.js"></script>
 <script type="text/javascript" src="js/MeshMove.js"></script>
@@ -30,7 +31,6 @@ var clock = new THREE.Clock();
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 700 );
 camera.position.z=50;
-
 var spawns = new ObjectSpawns();
 //<-- base variables end			
 //--> renderer definition start
@@ -46,7 +46,7 @@ var material = new THREE.MeshLambertMaterial( { map : textureCube }  );
 var cube = new THREE.Mesh( geometry, material );
 cube.position.z=3;
 scene.add( cube );
-var rotateCamera= new  RotateArroundPoint(camera,cube.position.x,cube.position.y,cube.position.z,1,40,2,1,0);
+var rotateCamera= new  RotateArroundPoint(camera,cube.position.x,cube.position.y,cube.position.z,1,40,2,0);
 //<-- create cube end
 //---> create sphera
 var spheraGeo = new THREE.SphereGeometry( 5, 32, 32 );
