@@ -59,6 +59,32 @@ function getVectorFrom2Points(x,y,z,x1,y1,z1){
     return vector;
     
 }
+/*****************************************/
+/******* point on line x and y 2d*******/
+/*****************************************/
+function lineCrossX(Ax,Ay,Bx,By,pointX){
+   m=(Ay-By)/(Ax-Bx);
+   y=m*(pointX-Ax)+Ay; 
+   return y;
+}
+function lineCrossY(Ax,Ay,Bx,By,pointY){
+    m=(Ay-By)/(Ax-Bx);
+    x=(-pointY+Ay-m*Ax)/m*(-1);
+    return x;
+}
+/*****************************************/
+/******* 2d line cross point*******/
+/*****************************************/
+function lineCrossPoint(Ax,Ay,Ax2,Ay2,Bx,By,Bx2,By2){
+    m1=(Ay-Ay2)/(Ax-Ax2);
+    i1=(m1*(-Ax)+Ay)*(-1);
+    m2=(By-By2)/(Bx-Bx2);
+    i2=(m2*(-Bx)+By);
+    x=(i1+i2)/(m1+m2*(-1));
+    point=[x,lineCrossX(Ax,Ay,Ax2,Ay2,x)];
+    
+    return point;
+}
 /*********************************/
 /*******barymetric check if point in triangle*******/
 /*********************************/

@@ -405,62 +405,78 @@ this.collisionPlane=function collisionPlane(plane,planeWs,planeHs,mesh,camera){
 
 this.collisionPlane2=function collisionPlane2(plane,planeWs,planeHs,mesh,width,height,camera){
     
+    //p=lineCrossPoint(1,3,3,1,1,1,4,4);
+    //output.value+="->>"+p[0]+":"+p[1]+"\n";
     mesh.rotation.z=correctRotation(mesh.rotation.z);
     //output.value+="Rotation: "+mesh.rotation.z+"\n";
    // output.value+="mesh rotation degrees: "+ getDegrees(mesh.rotation.z)+"\n";
-    ct=quaternion(10,6,0,5,3,0,90,2,-1);
-    output.value+="point pos: x"+ct[0]+"y"+ct[1]+"z"+ct[2]+"\n";
-    dot=getDotProduct(-6,8,0,5,12,0);
+    //ct=quaternion(10,6,0,5,3,0,90,2,-1);
+    //output.value+="point pos: x"+ct[0]+"y"+ct[1]+"z"+ct[2]+"\n";
+    //dot=getDotProduct(-6,8,0,5,12,0);
    // output.value+="dotproduct: "+dot+"\n";
-    if(inTriangle(0,6,0,0,0,0,11,0,0,10,1,1)==1){
+    /*if(inTriangle(0,6,0,0,0,0,11,0,0,10,1,1)==1){
          output.value+="INSIDE :)\n";
     }else{
          output.value+="OUTSIDE :/ \n";
-    }
+    }*/
     //mesh.geometry.computeBoundingBox();
     //width=mesh.geometry.boundingBox.max.x-mesh.geometry.boundingBox.min.x;
     //height=mesh.geometry.boundingBox.max.y-mesh.geometry.boundingBox.min.y;    
     //output.value+="Bounding box width:"+width+" height"+ height+"\n";
     //square vertices
     //quaternion(x,y,z,Xc,Yc,Zc,angle,axes)
-    v1=quaternion(mesh.position.x-width/2,
+    cubeVertices=new Array();
+    
+    cubeVertices.push(quaternion(mesh.position.x-width/2,
                mesh.position.y+height/2,
                0,
                mesh.position.x,
                mesh.position.y,
                mesh.position.z,
                getDegrees(mesh.rotation.z),
-               2);
-    v2=quaternion(mesh.position.x+width/2,
+               2));
+    cubeVertices.push(quaternion(mesh.position.x+width/2,
                mesh.position.y+height/2,
                0,
                mesh.position.x,
                mesh.position.y,
                mesh.position.z,
                getDegrees(mesh.rotation.z),
-               2);
-    v3=quaternion(mesh.position.x+width/2,
+               2));
+    cubeVertices.push(quaternion(mesh.position.x+width/2,
                mesh.position.y-height/2,
                0,
                mesh.position.x,
                mesh.position.y,
                mesh.position.z,
                getDegrees(mesh.rotation.z),
-               2);
-    v4=quaternion(mesh.position.x-width/2,
+               2));
+    cubeVertices.push(quaternion(mesh.position.x-width/2,
                mesh.position.y-height/2,
                0,
                mesh.position.x,
                mesh.position.y,
                mesh.position.z,
                getDegrees(mesh.rotation.z),
-               2);
+               2));
     //rotate points based on mesh rotation in world
-   /* output.value+="v1 x:"+v1[0]+" y:"+v1[1]+"\n"+
-                  "v2 x:"+v2[0]+" y:"+v2[1]+"\n"+
-                  "v3 x:"+v3[0]+" y:"+v3[1]+"\n"+
-                  "v4 x:"+v4[0]+" y:"+v4[1]+"\n";
-    */
+   /* output.value+="v1 x:"+cubeVertices[0][0]+" y:"+cubeVertices[0][1]+"\n"+
+                  "v2 x:"+cubeVertices[1][0]+" y:"+cubeVertices[1][1]+"\n"+
+                  "v3 x:"+cubeVertices[2][0]+" y:"+cubeVertices[2][1]+"\n"+
+                  "v4 x:"+cubeVertices[3][0]+" y:"+cubeVertices[3][1]+"\n";*/
+    //calculate box for surrounding vertices
+    xmin=cubeVertices[0][0];
+    xmax=cubeVertices[0][0];
+    ymin=cubeVertices[0][1];
+    ymax=cubeVertices[0][1];
+    for(i=1;i<cubeVertices.length;i++){
+           if(cubeVertices[i][0]>xmax)xmax=cubeVertices[i][0];
+           if(cubeVertices[i][0]<xmin)xmin=cubeVertices[i][0];
+           if(cubeVertices[i][1]>ymax)ymax=cubeVertices[i][1];
+           if(cubeVertices[i][1]<ymin)ymin=cubeVertices[i][1];
+            
+    }
+    
     
     //get vertice count x axes
     verticesW=planeWs+1;
@@ -475,46 +491,162 @@ this.collisionPlane2=function collisionPlane2(plane,planeWs,planeHs,mesh,width,h
     segmentWsize=planeW/planeWs;
     segmentHsize=planeH/planeHs;                                      
     //vertice coord x axes
-    xPoz=Math.floor(Math.abs((plane.geometry.vertices[0].x-v1[0])/segmentWsize));
-    yPoz=Math.floor(Math.abs((plane.geometry.vertices[0].y-v1[1])/segmentHsize));
+    xPoz=Math.floor(Math.abs((plane.geometry.vertices[0].x-xmin)/segmentWsize));
+    yPoz=Math.ceil(Math.abs((plane.geometry.vertices[0].y-ymax)/segmentHsize));
     //alert(Math.ceil(Math.abs((plane.geometry.vertices[0].y-spheraV1[1])/segmentHsize));
     //Get left-upper vertice index
     startVertice=xPoz+yPoz*verticesW;    
-    vXCube=Math.abs(Math.ceil((plane.geometry.vertices[startVertice].x-v3[0])/segmentWsize));
+    vXCube=Math.abs(Math.ceil((plane.geometry.vertices[startVertice].x-xmax)/segmentWsize));
     //get ammount of vertices on y axes
-    vYCube=Math.abs(Math.ceil((plane.geometry.vertices[startVertice].y-v3[1])/segmentHsize));
-    //get highest vertice
-    
-    
-    verticeHighest=startVertice;
-    verticeMedium=-1;
-    verticeLow=-1;    
+    vYCube=Math.abs(Math.ceil((plane.geometry.vertices[startVertice].y-ymin)/segmentHsize));
+    //get all vertices in mesh not 
+    firstImpactHeight=-9999999;
+    verticesAffectingMesh=new Array();
+    check=0;//if 0 then all vertices got same height
     //get highest vertices
-    st=startVertice;
-    hVertices= new Array();
-    check=1;//if 1 then all vertices same height
+    output.value+="Vertices near mesh: "+vYCube*vXCube+"\n";
+    /**********************************************************************/
+    /********************Get highest vertice height *************************/
+    /**********************************************************************/
+    verticesIn=0;
+    verticesOut=0;
     for(j=0;j<vYCube;j++){
         if(j!=0)startVertice+=verticesW;
-        for(i=startVertice;i<startVertice+vXCube;i++){        
-              d=this.distance(
-                (plane.geometry.vertices[i].x-mesh.position.x),
-                (plane.geometry.vertices[i].y-mesh.position.y),
-                (plane.geometry.vertices[i].z-mesh.position.z)     
-            );
-            if(d<=spheraRadius){
-            if(plane.geometry.vertices[i].z>plane.geometry.vertices[verticeHighest].z){
-            verticeHighest=i;
-            }
+        for(i=startVertice;i<startVertice+vXCube;i++){          
+                //check vertice heights
+                if(firstImpactHeight<plane.geometry.vertices[i].z){
+                    if(firstImpactHeight!=-9999999){
+                        check=1;
+                    }
+                    firstImpactHeight=plane.geometry.vertices[i].z;
+                }else if(firstImpactHeight>plane.geometry.vertices[i].z){
+                     if(firstImpactHeight!=-9999999){
+                        check=1;
+                    }
+                } 
+                //check inside or outside
+                 if(inTriangle(cubeVertices[0][0],cubeVertices[0][1],cubeVertices[0][2],
+                          cubeVertices[1][0],cubeVertices[1][1],cubeVertices[1][2],
+                          cubeVertices[3][0],cubeVertices[3][1],cubeVertices[3][2],
+                          plane.geometry.vertices[i].x,
+                          plane.geometry.vertices[i].y,
+                          plane.geometry.vertices[i].z)==1 || 
+                    inTriangle(cubeVertices[2][0],cubeVertices[2][1],cubeVertices[2][2],
+                          cubeVertices[1][0],cubeVertices[1][1],cubeVertices[1][2],
+                          cubeVertices[3][0],cubeVertices[3][1],cubeVertices[3][2],
+                          plane.geometry.vertices[i].x,
+                          plane.geometry.vertices[i].y,
+                          plane.geometry.vertices[i].z)==1
+                 ){ 
+                     verticesAffectingMesh.push([i,1,plane.geometry.vertices[i].z]);//id in/out(1/0) height
+                     verticesIn++;
+                 }else{
+                     verticesAffectingMesh.push([i,0,plane.geometry.vertices[i].z]);//id in/out(1/0) height
+                     verticesOut++;
+                 }//if in triangle in out end
             
-            if(plane.geometry.vertices[i].z!=plane.geometry.vertices[startVertice].z){
-             check=0;   
-            }
-            }
+            //output.value+="Z: "+plane.geometry.vertices[i].z+"\n";
+        }//for 2 end
         
-        }
-    }
-    mesh.position.z=plane.geometry.vertices[verticeHighest].z+3;
+    }//for 1 end
     
+    //output.value+="Valid vertices: "+verticesAffectingMesh.length+"\n";
+   // output.value+="Check: "+check+"\n";
+   // output.value+="Vertices in: "+verticesIn+"\n";
+    //output.value+="Vertices out: "+verticesOut+"\n";
+    if(check==0){
+     mesh.position.z=firstImpactHeight+3;
+    }else{
+     mesh.position.z=firstImpactHeight+3;   
+    /**********************************************************************/
+    /********check if some of vertices inside mesh highest  ***********/
+    /**********************************************************************/  
+        
+      for(i=0;i<verticesAffectingMesh.length;i++){
+        if(verticesAffectingMesh[i][1]==1 && verticesAffectingMesh[i][2]==firstImpactHeight){
+            check=2;
+            break;
+        }
+      }
+      if(check==2){
+       output.value="AHHHHHHHHHHHHHHHHHHHHHHAAA \n";   
+      }else{
+        for(i=0;i<verticesAffectingMesh.length;i++){
+            if(verticesAffectingMesh[i][1]==0 && verticesAffectingMesh[i][2]==firstImpactHeight){
+               output.value="SHIT :? \n";
+               
+                for(k=0;k<verticesAffectingMesh.length;k++){
+                    if(verticesAffectingMesh[k][1]==1){
+                        insideVertice=-1;
+                        if(verticesAffectingMesh[i][0]-1==verticesAffectingMesh[k][0]){
+                            output.value="LEFT \n";
+                            insideVertice=verticesAffectingMesh[i][0]-1;
+                        }
+                        if(verticesAffectingMesh[i][0]+1==verticesAffectingMesh[k][0]){
+                            output.value="RIGHT \n";
+                            insideVertice=verticesAffectingMesh[i][0]+1;
+                        }
+                        if(insideVertice!=-1){
+                          //get 2 closest cube vertices
+                          //cubeVertices[0][0]
+                            vx1=[0,-1];
+                            vx2=[0,-1];
+                            for(l=0;l<cubeVertices.length;l++){
+                                d=pythagor(cubeVertices[l][0]-
+                                         plane.geometry.vertices[verticesAffectingMesh[i][0]].x,
+                                         cubeVertices[l][1]-
+                                         plane.geometry.vertices[verticesAffectingMesh[i][0]].y,0);
+                                if(l==0){
+                                    vx1[0]=l;
+                                    vx1[1]=d;
+                                }else if(l>0){
+                                    if(d<vx1[1]){
+                                        vx2[0]=vx1[0];
+                                        vx2[1]=vx1[1];
+                                        vx1[0]=l;
+                                        vx1[1]=d;
+                                    }else if(vx2[1]==-1 && l!=vx1[0]){
+                                        vx2[0]=l;
+                                        vx2[1]=d;
+                                       
+                                    }else if(d>=vx1[1] && d<vx2[1]){
+                                        vx2[0]=l;
+                                        vx2[1]=d;
+                                    }
+                                        
+                                }
+                                
+                                
+                                
+                                output.value+="Val :"+d+"\n";
+                                
+                                
+                                         
+                            }
+                            p=lineCrossPoint(cubeVertices[vx1[0]][0],
+                                             cubeVertices[vx1[0]][1],
+                                             cubeVertices[vx2[0]][0],
+                                             cubeVertices[vx2[0]][1],
+                                             plane.geometry.vertices[insideVertice].x,
+                                             plane.geometry.vertices[insideVertice].y,
+                                             plane.geometry.vertices[verticesAffectingMesh[i][0]].x,
+                                             plane.geometry.vertices[verticesAffectingMesh[i][0]].y);
+                            output.value+="point->>"+p[0]+":"+p[1]+"\n";
+                            output.value+="Selected :"+vx1[1]+":"+vx2[1]+"\n";
+                            //??????WE got point now need height
+                            
+                            
+                        }
+                    }
+                   
+                }//<-- for end
+            }//<-- if end
+        }//for end
+          
+      }//<-- else 2 end
+    
+    
+    }//<-- else check end
     
     
     
