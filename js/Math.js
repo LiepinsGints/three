@@ -85,6 +85,13 @@ function lineCrossPoint(Ax,Ay,Ax2,Ay2,Bx,By,Bx2,By2){
     
     return point;
 }
+/*****************************************/
+/******* sin value *******/
+/*****************************************/
+function sinValue(a,c){
+    sin=a/c;   
+    return sin;
+}
 /*********************************/
 /*******barymetric check if point in triangle*******/
 /*********************************/

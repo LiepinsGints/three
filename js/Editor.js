@@ -557,7 +557,7 @@ this.collisionPlane2=function collisionPlane2(plane,planeWs,planeHs,mesh,width,h
     if(check==0){
      mesh.position.z=firstImpactHeight+3;
     }else{
-     mesh.position.z=firstImpactHeight+3;   
+    // mesh.position.z=firstImpactHeight+3;   
     /**********************************************************************/
     /********check if some of vertices inside mesh highest  ***********/
     /**********************************************************************/  
@@ -569,7 +569,8 @@ this.collisionPlane2=function collisionPlane2(plane,planeWs,planeHs,mesh,width,h
         }
       }
       if(check==2){
-       output.value="AHHHHHHHHHHHHHHHHHHHHHHAAA \n";   
+       output.value="AHHHHHHHHHHHHHHHHHHHHHHAAA \n"; 
+          mesh.position.z=firstImpactHeight+3;
       }else{
         for(i=0;i<verticesAffectingMesh.length;i++){
             if(verticesAffectingMesh[i][1]==0 && verticesAffectingMesh[i][2]==firstImpactHeight){
@@ -632,10 +633,29 @@ this.collisionPlane2=function collisionPlane2(plane,planeWs,planeHs,mesh,width,h
                                              plane.geometry.vertices[verticesAffectingMesh[i][0]].x,
                                              plane.geometry.vertices[verticesAffectingMesh[i][0]].y);
                             output.value+="point->>"+p[0]+":"+p[1]+"\n";
+                            output.value+="inside->>"+plane.geometry.vertices[insideVertice].x+":"
+                                +plane.geometry.vertices[insideVertice].y+"\n";
+                            output.value+="outside->>"+plane.geometry.vertices[verticesAffectingMesh[i][0]].x+":"
+                                +plane.geometry.vertices[verticesAffectingMesh[i][0]].y+"\n";
                             output.value+="Selected :"+vx1[1]+":"+vx2[1]+"\n";
                             //??????WE got point now need height
+                            hip=pythagor(plane.geometry.vertices[insideVertice].x- 
+                                         plane.geometry.vertices[verticesAffectingMesh[i][0]].x,
+                                         plane.geometry.vertices[insideVertice].x- 
+                                         plane.geometry.vertices[verticesAffectingMesh[i][0]].x,
+                                         0
+                                        );
+                            output.value+="Hipot: "+hip+"\n";
+                            sinB=sinValue(plane.geometry.vertices[insideVertice].x-
+                                          plane.geometry.vertices[verticesAffectingMesh[i][0]].x,hip);
+                            katet=plane.geometry.vertices[insideVertice].x-p[0];
+                            sinBDeg=getDegrees(Math.asin(sinB));
+                            sinA=Math.sin(getRadians(90-sinBDeg));
+                            getHeight=katet/sinA*sinB+plane.geometry.vertices[insideVertice].z;
                             
-                            
+                            output.value+="Angle sinb: "+sinBDeg+"\n";
+                            output.value+="Height: "+getHeight+"\n";
+                            mesh.position.z=getHeight+3; 
                         }
                     }
                    
