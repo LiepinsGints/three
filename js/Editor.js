@@ -404,6 +404,9 @@ this.collisionPlane=function collisionPlane(plane,planeWs,planeHs,mesh,camera){
 
 
 this.collisionPlane2=function collisionPlane2(plane,planeWs,planeHs,mesh,width,height,camera){
+    //Define 
+    verticesFormingPlane=new Array();
+    
     
     //p=lineCrossPoint(1,3,3,1,1,1,4,4);
     //output.value+="->>"+p[0]+":"+p[1]+"\n";
@@ -569,12 +572,169 @@ this.collisionPlane2=function collisionPlane2(plane,planeWs,planeHs,mesh,width,h
         }
       }
       if(check==2){
-       output.value="AHHHHHHHHHHHHHHHHHHHHHHAAA \n"; 
-          mesh.position.z=firstImpactHeight+3;
+          //only vertices inside mesh matter
+          //locks vertice id distance
+          cubeV1Locked=[-1,0];
+          cubeV2Locked=[-1,0];
+          cubeV3Locked=[-1,0];
+          cubeV4Locked=[-1,0];
+            for(i=0;i<verticesAffectingMesh.length;i++){
+                if(verticesAffectingMesh[i][1]==1 && verticesAffectingMesh[i][2]==firstImpactHeight){
+                    //cube_vertice, plane_vertice,distance
+                    tempLock=[-1,0,0]
+                      for(j=0;j<cubeVertices.length;j++){
+                          a=cubeVertices[j][0]-plane.geometry.vertices[verticesAffectingMesh[i][0]].x;
+                          b=cubeVertices[j][1]-plane.geometry.vertices[verticesAffectingMesh[i][0]].y;      
+                          distance=pythagor(a,b,0);
+                          if(j==0){
+                            tempLock[0]=j;   
+                            tempLock[1]=verticesAffectingMesh[i][0];   
+                            tempLock[2]=distance;   
+                          }else if(j>0 && tempLock[2]>distance){
+                            tempLock[0]=j;   
+                            tempLock[1]=verticesAffectingMesh[i][0];   
+                            tempLock[2]=distance; 
+                          }
+                         output.value+="Distance:"+distance+"\n";
+                      }//<-- for 2 end
+                    output.value+="Locked vertice:"+tempLock[0]+"\n";
+                       switch(tempLock[0]){
+                            
+                           case 0:
+                               if(cubeV1Locked[0]==-1){
+                                  cubeV1Locked[0]=tempLock[1];   
+                                  cubeV1Locked[1]=tempLock[2];   
+                               }else if(cubeV1Locked[0]!=-1 && cubeV1Locked[1]<tempLock[2]){
+                                  cubeV1Locked[0]=tempLock[1];   
+                                  cubeV1Locked[1]=tempLock[2];  
+                               }
+                           break;
+                           case 1:
+                               if(cubeV2Locked[0]==-1){
+                                  cubeV2Locked[0]=tempLock[1];   
+                                  cubeV2Locked[1]=tempLock[2];   
+                               }else if(cubeV2Locked[0]!=-1 && cubeV2Locked[1]<tempLock[2]){
+                                  cubeV2Locked[0]=tempLock[1];   
+                                  cubeV2Locked[1]=tempLock[2];  
+                               }
+                           break;
+                           case 2:
+                               if(cubeV3Locked[0]==-1){
+                                  cubeV3Locked[0]=tempLock[1];   
+                                  cubeV3Locked[1]=tempLock[2];   
+                               }else if(cubeV3Locked[0]!=-1 && cubeV3Locked[1]<tempLock[2]){
+                                  cubeV3Locked[0]=tempLock[1];   
+                                  cubeV3Locked[1]=tempLock[2];  
+                               }
+                           break;
+                           case 3:
+                               if(cubeV4Locked[0]==-1){
+                                  cubeV4Locked[0]=tempLock[1];   
+                                  cubeV4Locked[1]=tempLock[2];   
+                               }else if(cubeV4Locked[0]!=-1 && cubeV4Locked[1]<tempLock[2]){
+                                  cubeV4Locked[0]=tempLock[1];   
+                                  cubeV4Locked[1]=tempLock[2];  
+                               }
+                           break;       
+                       }
+                }//<-- id end
+            }//<-- for end
+          output.value+="*Locked vertices \n"+
+                        "v1:"+cubeV1Locked[0]+"\n"+
+                        "v2:"+cubeV2Locked[0]+"\n"+
+                        "v3:"+cubeV3Locked[0]+"\n"+
+                        "v4:"+cubeV4Locked[0]+"\n";
+          //If we got at least x3 locked vertices we can get plane equation    
+          
+             if(cubeV1Locked[0]!=-1){
+                 verticesFormingPlane.push(
+                [plane.geometry.vertices[cubeV1Locked[0]].x,
+                plane.geometry.vertices[cubeV1Locked[0]].y,
+                plane.geometry.vertices[cubeV1Locked[0]].z]
+             );
+             }
+             if(cubeV2Locked[0]!=-1){
+                verticesFormingPlane.push(
+                [plane.geometry.vertices[cubeV2Locked[0]].x,
+                plane.geometry.vertices[cubeV2Locked[0]].y,
+                plane.geometry.vertices[cubeV2Locked[0]].z]
+             );
+             }
+             if(cubeV3Locked[0]!=-1){
+                verticesFormingPlane.push(
+                [plane.geometry.vertices[cubeV3Locked[0]].x,
+                plane.geometry.vertices[cubeV3Locked[0]].y,
+                plane.geometry.vertices[cubeV3Locked[0]].z]
+             );
+             }
+             if(cubeV4Locked[0]!=-1){
+                verticesFormingPlane.push(
+                [plane.geometry.vertices[cubeV4Locked[0]].x,
+                plane.geometry.vertices[cubeV4Locked[0]].y,
+                plane.geometry.vertices[cubeV4Locked[0]].z]
+             );
+             }
+          //IF we found x3 locked vertices we can finish else 
+          //we got 2 cases only 1 locked vertice or x2 locked vertices
+          if(verticesFormingPlane.length<3){
+             
+              //Vertice id, angle
+              tempVertice=[-1,0];
+              emp=0;
+              inemp=0
+              for(i=0;i<verticesAffectingMesh.length;i++){
+                  emp++;
+                if(verticesAffectingMesh[i][1]==1 && verticesAffectingMesh[i][2]!=firstImpactHeight){
+                    inemp++;
+                    output.value+="OPA WE ARE HERE \n";
+                    //verticesFormingPlane[0][0]
+                   // a=1;
+                   // b=1;
+                    a=Math.abs(verticesFormingPlane[0][0]-plane.geometry.vertices[verticesAffectingMesh[i][0]].x);
+                    b=Math.abs(verticesFormingPlane[0][2]-plane.geometry.vertices[verticesAffectingMesh[i][0]].z);
+                    if(a==0)
+                    a=Math.abs(verticesFormingPlane[0][1]-plane.geometry.vertices[verticesAffectingMesh[i][0]].y);
+                    if(b==0)
+                    b=Math.abs(verticesFormingPlane[0][1]-plane.geometry.vertices[verticesAffectingMesh[i][0]].y);
+                    
+                    output.value+="A:"+a+" B:"+b+"\n";
+                    tg=b/a;
+                    output.value+="tg:"+tg+"\n";
+                    deg=getDegrees(Math.atan(tg));
+                     output.value+="deg:"+deg+"\n";
+                    if(tempVertice[0]==-1){
+                        tempVertice[0]=i;
+                        tempVertice[1]=deg;
+                    }else if(tempVertice[0]!=-1 && tempVertice[1]>deg){
+                        tempVertice[0]=i;
+                        tempVertice[1]=deg;
+                    }
+                }
+              }
+               
+              output.value+="************************************\n";
+              output.value+="Never used for: "+ tempVertice[0]+"\n";
+              output.value+="Emp: "+ emp+"\n";
+              output.value+="Emp: "+ inemp+"\n";
+              output.value+="************************************\n";
+              
+                verticesFormingPlane.push(
+                [plane.geometry.vertices[tempVertice[0]].x,
+                plane.geometry.vertices[tempVertice[0]].y,
+                plane.geometry.vertices[tempVertice[0]].z]);
+                if(verticesFormingPlane.length<3){
+                    ///LAst position here must continue thord vertex
+                }
+              
+              
+          }
+          
+          
+          //mesh.position.z=firstImpactHeight+3;
       }else{
         for(i=0;i<verticesAffectingMesh.length;i++){
             if(verticesAffectingMesh[i][1]==0 && verticesAffectingMesh[i][2]==firstImpactHeight){
-               output.value="SHIT :? \n";
+               output.value="SHs :? \n";
                
                 for(k=0;k<verticesAffectingMesh.length;k++){
                     if(verticesAffectingMesh[k][1]==1){
@@ -652,7 +812,8 @@ this.collisionPlane2=function collisionPlane2(plane,planeWs,planeHs,mesh,width,h
                             sinBDeg=getDegrees(Math.asin(sinB));
                             sinA=Math.sin(getRadians(90-sinBDeg));
                             getHeight=katet/sinA*sinB+plane.geometry.vertices[insideVertice].z;
-                            
+                            verticesAffectingMesh[i][2]=getHeight;
+                            verticesAffectingMesh[i][1]=3;
                             output.value+="Angle sinb: "+sinBDeg+"\n";
                             output.value+="Height: "+getHeight+"\n";
                             mesh.position.z=getHeight+3; 
@@ -668,6 +829,34 @@ this.collisionPlane2=function collisionPlane2(plane,planeWs,planeHs,mesh,width,h
     
     }//<-- else check end
     
+    /**********************************************************************/
+    /********Calculate plane and point location on plane  ***********/
+    /**********************************************************************/
+    if(verticesFormingPlane.length>=3){
+     vectorA=[verticesFormingPlane[1][0]-verticesFormingPlane[0][0],
+              verticesFormingPlane[1][1]-verticesFormingPlane[0][1],
+              verticesFormingPlane[1][2]-verticesFormingPlane[0][2]];
+     vectorB=[verticesFormingPlane[2][0]-verticesFormingPlane[0][0],
+              verticesFormingPlane[2][1]-verticesFormingPlane[0][1],
+              verticesFormingPlane[2][2]-verticesFormingPlane[0][2]];
+    
+    i=vectorA[1]*vectorB[2]-vectorA[2]*vectorB[1];
+    j=(vectorA[0]*vectorB[2]-vectorA[2]*vectorB[0])*(-1);
+    k=vectorA[0]*vectorB[1]-vectorA[1]*vectorB[0];
+    d=(i*verticesFormingPlane[0][0]+j*verticesFormingPlane[0][1]+
+        k*verticesFormingPlane[0][2])*(-1);
+        
+    zValue=(i*mesh.position.x+j*mesh.position.y+d)/k*(-1);
+    //camera.position.z+=zValue-mesh.position.z+Math.abs(mesh.geometry.boundingBox.max.z-mesh.geometry.boundingBox.min.z)/2;
+    if(k!=0)
+    mesh.position.z=zValue+3;
+        //else mesh.position.z=+3;
+    output.value+="ZVALUE:"+zValue+"\n";     
+    }
+    else{
+        
+     output.value+="ERROR not enaught vertices for plane forming... \n";   
+    }
     
     
     output.scrollTop=output.scrollHeight; 
