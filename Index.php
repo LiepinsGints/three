@@ -17,6 +17,7 @@
 <script type="text/javascript" src="js/Controls.js"></script>
 <script type="text/javascript" src="js/ObjectSpawns.js"></script>
 <script type="text/javascript" src="js/Editor.js"></script>
+<script type="text/javascript" src="js/Physics.js"></script>
 <!-- some tutorial https://stemkoski.github.io/Three.js/#mesh-movement-->
 <!--free models https://clara.io/view/19a8b999-4807-4252-be15-043b1f6e265c-->
 </head>
@@ -32,6 +33,7 @@ var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 700 );
 camera.position.z=50;
 var spawns = new ObjectSpawns();
+physics= new Physics('outputConsole');    
 //<-- base variables end			
 //--> renderer definition start
 var renderer = new THREE.WebGLRenderer();

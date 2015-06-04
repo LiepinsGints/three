@@ -723,7 +723,7 @@ this.collisionPlane2=function collisionPlane2(plane,planeWs,planeHs,mesh,width,h
                 plane.geometry.vertices[tempVertice[0]].y,
                 plane.geometry.vertices[tempVertice[0]].z]);
                 if(verticesFormingPlane.length<3){
-                    ///LAst position here must continue thord vertex
+                    ///LAst position here must continue thihellord vertex
                 }
               
               
