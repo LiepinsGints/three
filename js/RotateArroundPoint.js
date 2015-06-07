@@ -15,7 +15,7 @@ centerCheck
 0:disable
 1:enable
 */
-function RotateArroundPoint(mesh,Xc,Yc,Zc,angle,radius,axes,rotType,centerCheck){
+function RotateArroundPoint(mesh,Xc,Yc,Zc,angle,radius,axes,centerCheck){
 /*********************************/
 /*******Variables*******/
 /*********************************/
@@ -23,13 +23,31 @@ var distance=0;//distance between objects
 var previousCenter=[Xc,Yc,Zc];
 
 distance =pointDistance(mesh.position.x-Xc,mesh.position.y-Yc,mesh.position.z-Zc);
-
+alert("Radius:"+radius+" : Distance:"+distance+"\n"+
+     "x:"+mesh.position.x+" y:"+mesh.position.y+" z:"+mesh.position.z+"\n");
 if(distance!=radius){
   var normal= normalVector(mesh.position.x,mesh.position.y,mesh.position.z,distance);  
-  mesh.position.x=Math.round(normal[0]*radius);
-  mesh.position.y=Math.round(normal[1]*radius);
-  mesh.position.z=Math.round(normal[2]*radius);  
+
+        if(axes==0){
+            mesh.position.z=Zc;
+            mesh.position.y=Yc-radius;
+            mesh.position.x=Math.sqrt(radius-mesh.position.y-mesh.position.z);  
+        }else if(axes==1){
+            mesh.position.x=Xc;
+            mesh.position.z=Zc-radius;
+            mesh.position.y=Math.sqrt(radius-mesh.position.x-mesh.position.z);
+        }else if(axes==2){
+            //mesh.position.x=Math.round(normal[0]*radius);       
+            //mesh.position.y=Math.round(normal[1]*radius);
+            mesh.position.x=Xc;
+            mesh.position.y=Yc-radius;
+            mesh.position.z=Math.sqrt(radius-mesh.position.x-mesh.position.y);
+           
+        } 
 }
+distance =pointDistance(mesh.position.x-Xc,mesh.position.y-Yc,mesh.position.z-Zc);
+alert("->Radius:"+radius+" : Distance:"+distance+"\n"+
+     "x:"+mesh.position.x+" y:"+mesh.position.y+" z:"+mesh.position.z+"\n")  
 //distance =Math.round(pointDistance(mesh.position.x-Xc,mesh.position.y-Yc,mesh.position.z-Zc));
 //alert("Distance: "+distance);
 /*******pythagorean theorem*******/
@@ -69,8 +87,8 @@ this.QuatMulti =function(w1,i1,j1,k1,w2,i2,j2,k2) {
 /*********************************/
 this.changeCenter =function(Xc,Yc,Zc){
 previousCenter[0]=Xc;
-previousCenter[1]=Yc
-previousCenter[2]=Zc
+previousCenter[1]=Yc;
+previousCenter[2]=Zc;
 }
 /*********************************/
 /*******update function*******/

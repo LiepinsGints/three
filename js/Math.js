@@ -117,8 +117,9 @@ function lineCrossPoint(Ax,Ay,Ax2,Ay2,Bx,By,Bx2,By2){
         x=(i1+i2)/(m1+m2*(-1));
         point=[x,lineCrossX(Ax,Ay,Ax2,Ay2,x)];
         return point;
+    }else{
+    return [0,0];
     }
-   
 }
 /*****************************************/
 /******* sin value *******/

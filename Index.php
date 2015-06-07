@@ -18,7 +18,7 @@
 <script type="text/javascript" src="js/ObjectSpawns.js"></script>
 <script type="text/javascript" src="js/Editor.js"></script>
 <script type="text/javascript" src="js/Physics.js"></script>
- 
+<script type="text/javascript" src="js/Planets.js"></script> 
     
 <script type="text/javascript" src="js/Plane.js"></script>    
 <!-- some tutorial https://stemkoski.github.io/Three.js/#mesh-movement-->
@@ -50,8 +50,10 @@ var geometry = new THREE.BoxGeometry( 6, 6, 6 );
 var material = new THREE.MeshLambertMaterial( { map : textureCube }  );
 var cube = new THREE.Mesh( geometry, material );
 cube.position.z=3;
+cube.position.x=-50;
+cube.position.y=100;
 scene.add( cube );
-var rotateCamera= new  RotateArroundPoint(camera,cube.position.x,cube.position.y,cube.position.z,1,40,2,0);
+var rotateCamera= new  RotateArroundPoint(camera,cube.position.x,cube.position.y,cube.position.z,1,60,2,1);
 //<-- create cube end
 //---> create sphera
 var spheraGeo = new THREE.SphereGeometry( 5, 32, 32 );
@@ -70,10 +72,41 @@ sphera1.position.x=30;
 var objects=[];
 objects.push(sphera);
 objects.push(sphera1);
-scene.add( objects[0] );
-scene.add( objects[1] );
+//scene.add( objects[0] );
+//scene.add( objects[1] );
 //<-- sphera end
+/*****************Planets*******************************/
 
+planets = new Planets();
+sun=planets.addSun();
+scene.add(sun);
+
+earth=planets.addEarth();
+earth.position.x=10;
+earth.position.z=10;
+scene.add(earth);
+rotateEarth= new  RotateArroundPoint(earth,sun.position.x,sun.position.y,sun.position.z,1,150,2,1);
+
+moon=planets.addMoon();
+moon.position.z=10;
+scene.add(moon); 
+rotateMoon= new  RotateArroundPoint(moon,earth.position.x,earth.position.y,earth.position.z,1,30,2,1);
+
+mercury=planets.createPlanet ('img/Planets/Mercury/mercurymap.jpg','img/Planets/Mercury/mercurybump.jpg',0.1,5,32, 32);
+mercury.position.z=20;
+mercury.position.y=5;
+scene.add(mercury);
+rotateMercury= new  RotateArroundPoint(mercury,sun.position.x,sun.position.y,sun.position.z,1,58,2,1);
+
+venus=planets.createPlanet ('img/Planets/Venus/venusmap.jpg','img/Planets/Venus/venusbump.jpg',0.1,12,32, 32);
+venus.position.z=20;
+venus.position.y=50;
+scene.add(venus);
+rotateVenus= new  RotateArroundPoint(venus,sun.position.x,sun.position.y,sun.position.z,1,108,2,1);
+
+rotatePlanets= new  RotateArroundPoint(earth,sun.position.x,sun.position.y,sun.position.z,1,150,2,0);
+
+                                                                                           
 
 //--> create light start
 var lightPoint = new THREE.PointLight( 0xFFFFFF, 2, 15 );
@@ -142,57 +175,27 @@ function mouseUp(event){
 //cameraMoveX=0;
 }
 
-//<-- camera movement script end
-//document.addEventListener( 'mousemove', mouseMove, false );
-//--> plane edit function start
 
-function editPlane(verticeId, height,plane){
-  for(i=0;i<4;i++){
-  if(i==1)verticeId+=1;
-  if(i==2)verticeId+=planeWs;
-  if(i==3)verticeId+=1;	
-  plane.geometry.vertices[verticeId].z += height;
-  }
 
-  planeGeo.verticesNeedUpdate = true;
- // planeGeo.facesNeedUpdate = true;
-}//<-- plane edit end
-
-/*
-for ( var i = 0; i<plane.geometry.vertices.length; i++ ) {
-         plane.geometry.vertices[i].z = Math.floor((Math.random() * 100) + 1);;
-    }
-	*/
-	//cube.position.x
-
-//camera=camPlayer.setPos(cube.position.x,cube.position.y-60,cube.position.z+60);	  
 function update(delta){
 updateLabel(delta);
-//camera=camPlayer.setPos(cube.position.x,cube.position.y,cube.position.z+100);
 meshMove.update(delta);
-planeGeo.faces[ 1 ].materialIndex = 1;
-planeGeo.faces[ 2 ].materialIndex = 1;
+
 //<-- camera movement
 if(cameraMoveX==1){
 	if(x<window.innerWidth/2){
-      cube.rotation.z += 100*delta * Math.PI / 180;
+      //cube.rotation.z += 100*delta * Math.PI / 180;
       
       // RotateArroundPoint(camera.position.x,camera.position.y,cube.position.x,cube.position.y,5);	
 	}
 	else{
 		
-	cube.rotation.z -= 100*delta * Math.PI / 180;
+	//cube.rotation.z -= 100*delta * Math.PI / 180;
 	
-	
-	
-	//camera.rotation.z += 10 * Math.PI / 180;
 	}
-//camera.rotation.y += 1 * Math.PI / 180;
+
 }
 }//<--update function end
-  //for( var i = 1; i < 200; i ++ ) {
-  //  planeGeo.faces[ i ].materialIndex = 1;
-//}
 /******************** PLAYER FUNCTIONS END ********************/
 
 /*************************************************************/
@@ -200,15 +203,7 @@ if(cameraMoveX==1){
 var wire = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe:true } );
 var spheraEditor = new THREE.SphereGeometry( 5, 32, 32 );
 spheraEditorMesh = new THREE.Mesh(spheraEditor, wire);
-
 var editor = new Editor(spheraEditorMesh,scene,'editorSize','outputConsole','editorEnable');
-  
-    editor.collisionPlane(plane,300,300,cube,camera);
-//var x = document.getElementById("myCheck").checked;
-	
-
-
-
 /***********************************/
 //--->collisions test
 var output=document.getElementById('outputConsole');
@@ -280,7 +275,20 @@ renderer.render(scene, camera);
 //update label
 delta = clock.getDelta();
 update(delta);
-rotateLight.update(lightPoint,cube.position.x,cube.position.y,cube.position.z,90*delta,50,2,1,1);
+//rotations    
+  
+rotateLight.update(lightPoint,cube.position.x,cube.position.y,cube.position.z,90*delta,50,2,1);
+//EARTH + MOON   
+rotateEarth.update(earth,sun.position.x,sun.position.y,sun.position.z,-8*delta,150,2,1);    
+earth.rotation.y+=getRadians(4*delta);    
+rotateMoon.update(moon,earth.position.x,earth.position.y,earth.position.z,-10*delta,30,2,1);
+               
+rotateMercury.update(mercury,sun.position.x,sun.position.y,sun.position.z,-3*delta,58,2,1);
+mercury.rotation.y+=getRadians(4*delta);      
+venus
+rotateVenus.update(venus,sun.position.x,sun.position.y,sun.position.z,-3*delta,108,2,0);
+venus.rotation.y+=getRadians(-2*delta);     
+    
 collide();
 
 editor.follow(cube.position.x, cube.position.y, cube.position.z-6/2);   

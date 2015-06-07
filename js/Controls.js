@@ -81,11 +81,11 @@ function keyDown(event){
     break;
 	case 107 : //inrease terrain
      //editPlane(planePos.getVertices(planeW, planeH, planeWs, planeHs,cube.position.x,cube.position.y),1,plane);
-        editor.editPlaneSphera(plane,300,300,spheraEditorMesh,-1);         
+        editor.editPlaneSphera(plane,planeWs,planeHs,spheraEditorMesh,-1);         
     break;
 	case 109 : //lower terrain
      //editPlane(planePos.getVertices(planeW, planeH, planeWs, planeHs,cube.position.x,cube.position.y), -1,plane);
-        editor.editPlaneSphera(plane,300,300,spheraEditorMesh,1);             
+        editor.editPlaneSphera(plane,planeWs,planeHs,spheraEditorMesh,1);             
     break;
 	case 110:
     //rotateLight.update(lightPoint,0,0,0,1,40,2,1);

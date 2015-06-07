@@ -87,7 +87,7 @@ this.update=function update (delta) {
 	cam.position.x += this.movementSpeed*delta*a.x;
 	cam.position.y += this.movementSpeed*delta*a.y;
 	
-    physics.collision(plane,300,300,mesh,6,6,cam); 
+    physics.collision(plane,planeWs,planeHs,mesh,6,6,cam); 
    // editor.collisionPlane2(plane,300,300,mesh,6,6,cam);   
 	//mesh.translateY( this.movementSpeed*delta );
 	//cam.translateY( this.movementSpeed*delta );
@@ -104,7 +104,7 @@ this.update=function update (delta) {
 	cam.position.x -= this.movementSpeed*delta*a.x;
 	cam.position.y -= this.movementSpeed*delta*a.y;
     //editor.collisionPlane2(plane,300,300,mesh,6,6,cam); 
-    physics.collision(plane,300,300,mesh,6,6,cam);  
+    physics.collision(plane,planeWs,planeHs,mesh,6,6,cam);  
   }
   if(this.moveLeft==1){
 	//mesh.position.x -= this.movementSpeed*delta;
