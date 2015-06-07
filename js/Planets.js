@@ -4,7 +4,7 @@ function Planets(){
         positionX=-100;
         positionY=0;
         positionZ=25;
-        geometry   = new THREE.SphereGeometry(25, 32, 32);
+        geometry   = new THREE.SphereGeometry(50, 32, 32);
         material  = new THREE.MeshPhongMaterial();
         sunMesh = new THREE.Mesh(geometry, material);
         sunMesh.position.x=positionX;
@@ -50,6 +50,7 @@ function Planets(){
         material.specular  = new THREE.Color('grey');
        return earthMesh;
     }
+ 
     /****Create moon*/
     this.addMoon=function addMoon () {
         positionX=-20;

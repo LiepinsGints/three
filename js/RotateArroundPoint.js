@@ -41,7 +41,7 @@ if(distance!=radius){
             //mesh.position.y=Math.round(normal[1]*radius);
             mesh.position.x=Xc;
             mesh.position.y=Yc-radius;
-            mesh.position.z=Math.sqrt(radius-mesh.position.x-mesh.position.y);
+            mesh.position.z=Zc;
            
         } 
 }

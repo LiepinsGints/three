@@ -33,7 +33,7 @@ include_once 'blocks/ui.php';
 //--> base variables start 
 var clock = new THREE.Clock();
 var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 700 );
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 500 );
 camera.position.z=50;
 var spawns = new ObjectSpawns();
 physics= new Physics('outputConsole');    
@@ -54,6 +54,8 @@ cube.position.x=-50;
 cube.position.y=100;
 scene.add( cube );
 var rotateCamera= new  RotateArroundPoint(camera,cube.position.x,cube.position.y,cube.position.z,1,60,2,1);
+rotateCamera.update(camera,cube.position.x,cube.position.y,cube.position.z,40,60,0,1)
+cube.rotation.z=getRadians(40);
 //<-- create cube end
 //---> create sphera
 var spheraGeo = new THREE.SphereGeometry( 5, 32, 32 );
@@ -79,11 +81,12 @@ objects.push(sphera1);
 
 planets = new Planets();
 sun=planets.addSun();
+sun.position.z=80;
 scene.add(sun);
 
 earth=planets.addEarth();
 earth.position.x=10;
-earth.position.z=10;
+earth.position.z=105;
 scene.add(earth);
 rotateEarth= new  RotateArroundPoint(earth,sun.position.x,sun.position.y,sun.position.z,1,150,2,1);
 
@@ -93,16 +96,48 @@ scene.add(moon);
 rotateMoon= new  RotateArroundPoint(moon,earth.position.x,earth.position.y,earth.position.z,1,30,2,1);
 
 mercury=planets.createPlanet ('img/Planets/Mercury/mercurymap.jpg','img/Planets/Mercury/mercurybump.jpg',0.1,5,32, 32);
-mercury.position.z=20;
-mercury.position.y=5;
+mercury.position.z=105;
+
 scene.add(mercury);
 rotateMercury= new  RotateArroundPoint(mercury,sun.position.x,sun.position.y,sun.position.z,1,58,2,1);
 
 venus=planets.createPlanet ('img/Planets/Venus/venusmap.jpg','img/Planets/Venus/venusbump.jpg',0.1,12,32, 32);
-venus.position.z=20;
+venus.position.z=105;
 venus.position.y=50;
 scene.add(venus);
 rotateVenus= new  RotateArroundPoint(venus,sun.position.x,sun.position.y,sun.position.z,1,108,2,1);
+
+mars=planets.createPlanet ('img/Planets/Mars/mars_1k_color.jpg','img/Planets/Mars/mars_1k_topo.jpg',0.5,12,32, 32);
+mars.position.z=20;
+mars.position.y=50;
+scene.add(mars);
+rotateMars= new  RotateArroundPoint(mars,sun.position.x,sun.position.y,sun.position.z,1,227,2,1);
+
+jupiter=planets.createPlanet ('img/Planets/Jupiter/jupitermap.jpg','img/Planets/Jupiter/jupitermap.jpg',0.5,40,32, 32);
+jupiter.position.z=105;
+jupiter.position.y=50;
+scene.add(jupiter);
+rotateJupiter= new  RotateArroundPoint(jupiter,sun.position.x,sun.position.y,sun.position.z,1,350,2,1);
+
+
+saturn=planets.createPlanet ('img/Planets/Saturn/saturnmap.jpg','img/Planets/Saturn/saturnmap.jpg',0.5,35,32, 32);
+saturn.position.z=105;
+saturn.position.y=50;
+scene.add(saturn);
+rotateSaturn= new  RotateArroundPoint(saturn,sun.position.x,sun.position.y,sun.position.z,1,425,2,1);
+
+uranus=planets.createPlanet ('img/Planets/Uranus/uranusmap.jpg','img/Planets/Uranus/uranusmap.jpg',0.5,20,32, 32);
+uranus.position.z=105;
+uranus.position.y=50;
+scene.add(uranus);
+rotateUranus= new  RotateArroundPoint(uranus,sun.position.x,sun.position.y,sun.position.z,1,500,2,1);
+
+pluto=planets.createPlanet ('img/Planets/Pluto/plutomap1k.jpg','img/Planets/Pluto/plutobump1k.jpg',0.5,4,32, 32);
+pluto.position.z=105;
+pluto.position.y=50;
+scene.add(pluto);
+rotatePluto= new  RotateArroundPoint(pluto,sun.position.x,sun.position.y,sun.position.z,1,550,2,1);
+
 
 rotatePlanets= new  RotateArroundPoint(earth,sun.position.x,sun.position.y,sun.position.z,1,150,2,0);
 
@@ -125,9 +160,19 @@ scene.add( lightAmbient );
 scene.fog = new THREE.FogExp2( 0xFFFFFF, 0.0019 );
 // SKYBOX/FOG
 	var skyBoxGeometry = new THREE.BoxGeometry( 1000, 1000, 1000 );
-	var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x9999ff, side: THREE.BackSide } );
-	var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
-	scene.add(skyBox);
+       
+	var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x9999ff,depthWrite: false, side: THREE.BackSide } );
+	skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
+   
+	//scene.add(skyBox);
+/*skyBoxGeo = new THREE.SphereGeometry(1000, 128, 128);
+skyBoxMat = new THREE.MeshBasicMaterial( { color: 0x9999ff, side: THREE.BackSide } );
+skyBox = new THREE.Mesh( skyBoxGeo, skyBoxMat );
+skyBox.frustumCulled=false; 
+*/
+camera.add(skyBox );
+scene.add( camera );
+//scene.add(skyBox);
 //-->create plane start
 //texture 1
 
@@ -279,15 +324,30 @@ update(delta);
   
 rotateLight.update(lightPoint,cube.position.x,cube.position.y,cube.position.z,90*delta,50,2,1);
 //EARTH + MOON   
-rotateEarth.update(earth,sun.position.x,sun.position.y,sun.position.z,-8*delta,150,2,1);    
-earth.rotation.y+=getRadians(4*delta);    
+rotateEarth.update(earth,sun.position.x,sun.position.y,sun.position.z,-4*delta,150,2,1);    
+earth.rotation.y+=getRadians(10*delta);    
 rotateMoon.update(moon,earth.position.x,earth.position.y,earth.position.z,-10*delta,30,2,1);
                
 rotateMercury.update(mercury,sun.position.x,sun.position.y,sun.position.z,-3*delta,58,2,1);
-mercury.rotation.y+=getRadians(4*delta);      
-venus
+mercury.rotation.y+=getRadians(6*delta);      
+//venus
 rotateVenus.update(venus,sun.position.x,sun.position.y,sun.position.z,-3*delta,108,2,0);
-venus.rotation.y+=getRadians(-2*delta);     
+venus.rotation.y+=getRadians(-8*delta);     
+//Mars
+rotateMars.update(mars,sun.position.x,sun.position.y,sun.position.z,-4*delta,227,2,1);    
+mars.rotation.y+=getRadians(8*delta);    
+
+rotateJupiter.update(jupiter,sun.position.x,sun.position.y,sun.position.z,-3*delta,350,2,1);
+jupiter.rotation.y+=getRadians(8*delta);       
+    
+rotateSaturn.update(saturn,sun.position.x,sun.position.y,sun.position.z,-2*delta,425,2,1);
+saturn.rotation.y+=getRadians(7*delta);  
+
+rotateUranus.update(uranus,sun.position.x,sun.position.y,sun.position.z,-1*delta,500,2,1);
+uranus.rotation.y+=getRadians(7*delta);      
+   
+rotatePluto.update(pluto,sun.position.x,sun.position.y,sun.position.z,-1.5*delta,550,2,1);
+pluto.rotation.y+=getRadians(4*delta);  
     
 collide();
 
