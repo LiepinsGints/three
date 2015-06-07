@@ -76,14 +76,49 @@ function lineCrossY(Ax,Ay,Bx,By,pointY){
 /******* 2d line cross point*******/
 /*****************************************/
 function lineCrossPoint(Ax,Ay,Ax2,Ay2,Bx,By,Bx2,By2){
+    point=[-999999,-999999];
     m1=(Ay-Ay2)/(Ax-Ax2);
-    i1=(m1*(-Ax)+Ay)*(-1);
     m2=(By-By2)/(Bx-Bx2);
-    i2=(m2*(-Bx)+By);
-    x=(i1+i2)/(m1+m2*(-1));
-    point=[x,lineCrossX(Ax,Ay,Ax2,Ay2,x)];
     
-    return point;
+    
+    if(m1==0 || m2==0){
+          if(m1==0 && m2!=0){
+              if(Ax-Ax2==0){
+                  point=[Ax,lineCrossX(Bx,By,Bx2,By2,Ax)];
+                  return point;
+              }else if(Ay-Ay2==0){
+                  point=[lineCrossY(Bx,By,Bx2,By2,Ay),Ay];
+                  return point;
+             }
+          }
+         else if(m1!=0 && m2==0){
+              if(Bx-Bx2==0){
+                 point=[Ax,lineCrossX(Ax,Ay,Ax2,Ay2,Bx)];
+                 return point;
+              }else if(By-By2==0){
+                  point=[lineCrossY(Ax,Ay,Ax2,Ay2,By),By];
+                  return point;
+              }
+         }     
+        else if(m1==0 && m2 ==0){
+             if(Ax-Ax2==0 && By-By2==0){
+                 point=[Ax,By];
+                 return point;
+             }
+             if(Bx-Bx2==0 && Ay-Ay2==0){
+                 point=[Bx,Ay];
+                 return point;
+             }
+        
+        }   
+    }else if(m1!=0 && m2!=0){
+        i1=(m1*(-Ax)+Ay)*(-1);
+        i2=(m2*(-Bx)+By);
+        x=(i1+i2)/(m1+m2*(-1));
+        point=[x,lineCrossX(Ax,Ay,Ax2,Ay2,x)];
+        return point;
+    }
+   
 }
 /*****************************************/
 /******* sin value *******/
@@ -154,6 +189,7 @@ centerCheck
 */
 function quaternion(x,y,z,Xc,Yc,Zc,angle,axes){
 //quat calculation
+if(angle!=0){    
 var sinAngle=Math.sin((angle/2) * (Math.PI/180));
 var cosAngle=Math.cos((angle/2) * (Math.PI/180));
 var qi,qj,qk;   
@@ -186,5 +222,6 @@ var s1=QuatMulti(cosAngle,-qi,-qj,-qk,0,x-Xc,y-Yc,z-Zc);
 var s2=QuatMulti(s1[0],s1[1],s1[2],s1[3],cosAngle,qi,qj,qk);
 coords=[s2[1]+Xc,s2[2]+Yc,s2[3]+Zc];
     return coords;
+}else return [x,y,z];
 }
 

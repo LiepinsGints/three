@@ -863,4 +863,21 @@ this.collisionPlane2=function collisionPlane2(plane,planeWs,planeHs,mesh,width,h
     
 }//<-- col detection 2 end
 
+/*****************************************************************/
+/***********************Dump Plane ************************/
+/**************************************************************/
+this.DumpPlane=function DumpPlane(plane,width,height,planeWs,planeHs){
+    planeDefs="";
+    
+    totalVertices=(planeHs+1)*(planeWs+1);
+    for(i=0;i<totalVertices;i++){
+        if(plane.geometry.vertices[i].z!=0)
+        planeDefs+="plane.geometry.vertices["+i+"].z="+plane.geometry.vertices[i].z+";\n";
+    }
+  
+    
+    output.value=planeDefs;
+    //alert(planeDefs);
+}
+
 }
