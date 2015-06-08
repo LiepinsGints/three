@@ -2,6 +2,247 @@
 <head>
 <title>Tests</title>    
   <script type="text/javascript" src="js/three.js"></script> 
+    <script type="text/javascript">
+    /*********************************/
+/*******Degress to radian*******/
+/*********************************/
+function getRadians(degrees){
+    return degrees*Math.PI/180;    
+}
+/*********************************/
+/*******radian to degreesn*******/
+/*********************************/
+function getDegrees(radians){
+   return radians*180/Math.PI; 
+}
+/*******pythagorean theorem*******/
+/*********************************/
+/*********************************/
+function pythagor (a,b,c) {
+return Math.sqrt(Math.pow(a,2)+Math.pow(b,2)+Math.pow(c,2));
+}
+/*********************************/
+/*******Object rotation correction*******/
+/*********************************/
+//361 degrees =>1 degree
+function correctRotation(radians){
+    deg = getDegrees(radians);
+    contains=0;
+    if(deg>=0){
+    contains=Math.floor(deg/360);
+    }else{
+    contains=Math.ceil(deg/360);    
+    }
+    if(contains!=0){
+        //deg-=contains*360;
+        deg=deg-360*contains;
+        return getRadians(deg); 
+    }else
+        return radians;
+       
+}
+
+
+/*********************************/
+/*******Normal vector*******/
+/*********************************/
+function normalVector (x,y,z,distance) {
+var coords=[x/distance,y/distance,z/distance];
+return coords;
+}	
+/*********************************/
+/*******dot product*******/
+/*********************************/
+function getDotProduct(x,y,z,x1,y1,z1){
+    return x*x1+y*y1+z*z1;   
+}
+/*********************************/
+/*******vector from 2 points*******/
+/*********************************/
+function getVectorFrom2Points(x,y,z,x1,y1,z1){
+  vector=[x1-x,y1-y,z1-z];
+    return vector;
+    
+}
+/*****************************************/
+/******* point on line x and y 2d*******/
+/*****************************************/
+function lineCrossX(Ax,Ay,Bx,By,pointX){
+   m=(Ay-By)/(Ax-Bx);
+   y=m*(pointX-Ax)+Ay; 
+   return y;
+}
+function lineCrossY(Ax,Ay,Bx,By,pointY){
+    m=(Ay-By)/(Ax-Bx);
+    x=(-pointY+Ay-m*Ax)/m*(-1);
+    return x;
+}
+/*****************************************/
+/******* 2d line cross point*******/
+/*****************************************/
+function lineCrossPoint(Ax,Ay,Ax2,Ay2,Bx,By,Bx2,By2){
+    point=[-999999,-999999];
+    m1=(Ay-Ay2)/(Ax-Ax2);
+    m2=(By-By2)/(Bx-Bx2);
+    
+    
+    if(m1==0 || m2==0){
+          if(m1==0 && m2!=0){
+              if(Ax-Ax2==0){
+                  point=[Ax,lineCrossX(Bx,By,Bx2,By2,Ax)];
+                  return point;
+              }else if(Ay-Ay2==0){
+                  point=[lineCrossY(Bx,By,Bx2,By2,Ay),Ay];
+                  return point;
+             }
+          }
+         else if(m1!=0 && m2==0){
+              if(Bx-Bx2==0){
+                 point=[Ax,lineCrossX(Ax,Ay,Ax2,Ay2,Bx)];
+                 return point;
+              }else if(By-By2==0){
+                  point=[lineCrossY(Ax,Ay,Ax2,Ay2,By),By];
+                  return point;
+              }
+         }     
+        else if(m1==0 && m2 ==0){
+             if(Ax-Ax2==0 && By-By2==0){
+                 point=[Ax,By];
+                 return point;
+             }
+             if(Bx-Bx2==0 && Ay-Ay2==0){
+                 point=[Bx,Ay];
+                 return point;
+             }
+        
+        }   
+    }else if(m1!=0 && m2!=0){
+        i1=(m1*(-Ax)+Ay)*(-1);
+        i2=(m2*(-Bx)+By);
+        x=(i1+i2)/(m1+m2*(-1));
+        point=[x,lineCrossX(Ax,Ay,Ax2,Ay2,x)];
+        return point;
+    }else{
+    return [0,0];
+    }
+}
+/*****************************************/
+/******* sin value *******/
+/*****************************************/
+function sinValue(a,c){
+    sin=a/c;   
+    return sin;
+}
+/*********************************/
+/*******barymetric check if point in triangle*******/
+/*********************************/
+function inTriangle(Ax,Ay,Az,Bx,By,Bz,Cx,Cy,Cz,Px,Py,Pz){
+v0 = getVectorFrom2Points(Ax,Ay,Az,Cx,Cy,Cz);
+v1 = getVectorFrom2Points(Ax,Ay,Az,Bx,By,Bz);    
+v2 = getVectorFrom2Points(Ax,Ay,Az,Px,Py,Pz);
+
+dot00 = getDotProduct(v0[0],v0[1],v0[2],v0[0],v0[1],v0[2]);
+dot01 = getDotProduct(v0[0],v0[1],v0[2],v1[0],v1[1],v1[2]);
+dot02 = getDotProduct(v0[0],v0[1],v0[2],v2[0],v2[1],v2[2]);
+dot11 = getDotProduct(v1[0],v1[1],v1[2],v1[0],v1[1],v1[2]);
+dot12 = getDotProduct(v1[0],v1[1],v1[2],v2[0],v2[1],v2[2]);
+
+// Compute barycentric coordinates
+invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+// Check if point is in triangle
+if((u >= 0) && (v >= 0) && (u + v < 1))
+return 1;
+else
+return 0;
+ 
+}
+
+
+/*********************************/
+/*******Quaternion multiplication*******/
+/*********************************/
+function QuatMulti(w1,i1,j1,k1,w2,i2,j2,k2) {
+	w=(w1*w2)-(i1*i2)-(j1*j2)-(k1*k2);
+	x=(w1*i2)+(i1*w2)+(j1*k2)-(k1*j2);
+    output.innerHTML=output.innerHTML+"(w1*i2):"+(w1*i2)+
+        " +(i1*w2):"+(i1*w2)
+        +" (j1*k2):"+j1*k2
+        +" -(k1*j2):"
+        +(k1*j2)+ " <br />"; 
+    output.innerHTML=output.innerHTML+"x:"+Math.round(x) +" <br />"; 
+	y=(w1*j2)+(j1*w2)+(k1*i2)-(i1*k2);
+	z=(w1*k2)+(k1*w2)+(i1*j2)-(j1*i2);
+	var quat=[w,x,y,z];
+	return quat;
+}
+
+
+/*********************************/
+/*******quaternion function*******/
+/*********************************/
+/*
+x,y,z - rotating object coords
+Xc,Yc,Zc - center coordinates
+Angle - angle increment 
+radius- distance between objects
+axes (axe rotation):
+	 0-x
+	 1-y
+	 2-z
+type=-1 reverse
+type= 1 clockwise 
+
+centerCheck
+0:disable
+1:enable
+*/
+function quaternion(x,y,z,Xc,Yc,Zc,angle,axes){
+//quat calculation
+if(angle!=0){    
+var sinAngle=Math.sin(getRadians(angle/2));
+output.innerHTML=output.innerHTML+"sin:"+sinAngle+"<br />";     
+var cosAngle=Math.cos(getRadians(angle/2));
+output.innerHTML=output.innerHTML+"cos:"+cosAngle+"<br />";        
+var qi,qj,qk;   
+//
+    
+    
+switch(axes){
+case 0:
+qi= sinAngle*(Xc+1);
+qj= sinAngle*Yc;
+qk= sinAngle*Zc;
+output.innerHTML=output.innerHTML+"qi:"+qi+" qj:"+qj+" qk:"+qk+ " <br />"; 
+break;
+case 1:
+qi= sinAngle*Xc;
+qj= sinAngle*(Yc+1);
+qk= sinAngle*Zc;
+output.innerHTML=output.innerHTML+"qi:"+qi+" qj:"+qj+" qk:"+qk+ " <br />"; 
+break;        
+case 2:
+qi= sinAngle*Xc;
+qj= sinAngle*Yc;
+qk= sinAngle*(Zc+1);
+output.innerHTML=output.innerHTML+"qi:"+qi+" qj:"+qj+" qk:"+qk+ " <br />"; 
+break;
+}
+    
+var s1=QuatMulti(cosAngle,qi,qj,qk,0,x,y,z);
+output.innerHTML=output.innerHTML+"S1x:"+s1[1]+" y:"+s1[2]+" z:"+s1[3]+" w:"+s1[0]+ " <br />"; 
+var s2=QuatMulti(s1[0],s1[1],s1[2],s1[3],cosAngle,-qi,-qj,-qk);
+output.innerHTML=output.innerHTML+"S2x:"+s2[1]+" y:"+s2[2]+" z:"+s2[3]+" w:"+s2[0]+ " <br />";     
+coords=[s2[1],s2[2],s2[3]];
+    return coords;
+}else return [x,y,z];
+}
+
+ 
+    </script>
+    
 </head>
  
     
@@ -16,88 +257,20 @@
     
 <script>
 //calculate disatance between points
-function distance(v1,v2){
-   d=Math.sqrt((v1.x*v2.x+v1.y*v2.y+v1.z*v2.z));
-}
+
 var output = document.getElementById("output");    
 /*******************************************/
 /**********calculate plane points **********/
 /*******************************************/    
-center=new THREE.Vector3( 5, 3, 10 );
-//first row  
-vertices = new Array();    
-a=new THREE.Vector3( 0, 6, 0 ); 
-b=new THREE.Vector3( 2, 6, 0 ); 
-c=new THREE.Vector3( 4, 6, 0 ); 
-d=new THREE.Vector3( 6, 6, 0 ); 
-e=new THREE.Vector3( 8, 6, 0 ); 
-f=new THREE.Vector3( 10, 6, 0 );
-vertices.push(a);
-vertices.push(b);
-vertices.push(c);
-vertices.push(d);
-vertices.push(e);
-vertices.push(f);    
-//second row    
-g=new THREE.Vector3( 0, 4, 0 ); 
-h=new THREE.Vector3( 2, 4, 0 ); 
-i=new THREE.Vector3( 4, 4, 0 ); 
-j=new THREE.Vector3( 6, 4, 0 );
-k=new THREE.Vector3( 8, 4, 0 ); 
-l=new THREE.Vector3( 10, 4, 0 );  
-vertices.push(g);
-vertices.push(h);
-vertices.push(i);
-vertices.push(j);
-vertices.push(k);
-vertices.push(l);     
-//third row    
-m=new THREE.Vector3( 0, 2, 0 ); 
-n=new THREE.Vector3( 2, 2, 0 ); 
-o=new THREE.Vector3( 4, 2, 0 ); 
-p=new THREE.Vector3( 6, 2, 0 );
-r=new THREE.Vector3( 8, 2, 0 ); 
-s=new THREE.Vector3( 10, 2, 0 ); 
-vertices.push(m);
-vertices.push(n);
-vertices.push(o);
-vertices.push(p);
-vertices.push(r);
-vertices.push(s);     
-//fourth row    
-t=new THREE.Vector3( 0, 0, 0 ); 
-u=new THREE.Vector3( 2, 0, 0 ); 
-v=new THREE.Vector3( 4, 0, 0 ); 
-x=new THREE.Vector3( 6, 0, 0 );    
-z=new THREE.Vector3( 8, 0, 0 ); 
-w=new THREE.Vector3( 10, 0, 0 );
-vertices.push(t);
-vertices.push(u);
-vertices.push(v);
-vertices.push(x);
-vertices.push(z);
-vertices.push(w);     
-// algorithm part 1 check for first impact height
-firstImpactVerticeHeight=[vertices[0].z,0];
-verticesSame=0;//all vertices same height if 0 different else different    
-for(i=1;i<vertices.length;i++){
-    if(vertices[i].z>firstImpactVerticeHeight[0]){
-        firstImpactVerticeHeight[0]=vertices[i].z;
-        firstImpactVerticeHeight[1]=i;
-        verticesSame=1;
-    }else if(vertices[i].z<firstImpactVerticeHeight[0]){
-        verticesSame=1;
-    }
-}
-//
-if(verticesSame==0){
- output.innerHTML=output.innerHTML+"All vertices same \n"; 
-}else{
- output.innerHTML=output.innerHTML+"Not all vertices same \n";
+
+
+
     
+//coords=quaternion(1,0,0,0,0,0,90,2); 
+//function quaternion(x,y,z,Xc,Yc,Zc,angle,axes){    
+    coords=quaternion(7,0,0,4,0,0,90,2); 
     
-    
-}
+output.innerHTML=output.innerHTML+"x:"+coords[0]+" y:"+coords[1]+" z:"+coords[2]+ " \n";    
     
     
 

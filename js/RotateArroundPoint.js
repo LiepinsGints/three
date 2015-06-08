@@ -23,8 +23,8 @@ var distance=0;//distance between objects
 var previousCenter=[Xc,Yc,Zc];
 
 distance =pointDistance(mesh.position.x-Xc,mesh.position.y-Yc,mesh.position.z-Zc);
-alert("Radius:"+radius+" : Distance:"+distance+"\n"+
-     "x:"+mesh.position.x+" y:"+mesh.position.y+" z:"+mesh.position.z+"\n");
+/*alert("Radius:"+radius+" : Distance:"+distance+"\n"+
+     "x:"+mesh.position.x+" y:"+mesh.position.y+" z:"+mesh.position.z+"\n");*/
 if(distance!=radius){
   var normal= normalVector(mesh.position.x,mesh.position.y,mesh.position.z,distance);  
 
@@ -46,8 +46,8 @@ if(distance!=radius){
         } 
 }
 distance =pointDistance(mesh.position.x-Xc,mesh.position.y-Yc,mesh.position.z-Zc);
-alert("->Radius:"+radius+" : Distance:"+distance+"\n"+
-     "x:"+mesh.position.x+" y:"+mesh.position.y+" z:"+mesh.position.z+"\n")  
+/*alert("->Radius:"+radius+" : Distance:"+distance+"\n"+
+     "x:"+mesh.position.x+" y:"+mesh.position.y+" z:"+mesh.position.z+"\n")  */
 //distance =Math.round(pointDistance(mesh.position.x-Xc,mesh.position.y-Yc,mesh.position.z-Zc));
 //alert("Distance: "+distance);
 /*******pythagorean theorem*******/

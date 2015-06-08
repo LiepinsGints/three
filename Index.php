@@ -29,7 +29,7 @@
 include_once 'blocks/ui.php';
 ?>
 <script>
-
+//http://www.nutty.ca/webgl/skygen/
 //--> base variables start 
 var clock = new THREE.Clock();
 var scene = new THREE.Scene();
@@ -54,7 +54,7 @@ cube.position.x=-50;
 cube.position.y=100;
 scene.add( cube );
 var rotateCamera= new  RotateArroundPoint(camera,cube.position.x,cube.position.y,cube.position.z,1,60,2,1);
-rotateCamera.update(camera,cube.position.x,cube.position.y,cube.position.z,40,60,0,1)
+rotateCamera.update(camera,cube.position.x,cube.position.y,cube.position.z,-40,60,0,1)
 cube.rotation.z=getRadians(40);
 //<-- create cube end
 //---> create sphera
@@ -159,17 +159,20 @@ scene.add( lightAmbient );
 //<-- create light end
 scene.fog = new THREE.FogExp2( 0xFFFFFF, 0.0019 );
 // SKYBOX/FOG
-	var skyBoxGeometry = new THREE.BoxGeometry( 1000, 1000, 1000 );
-       
+	//var skyBoxGeometry = new THREE.BoxGeometry( 1000, 1000, 1000 );
+    var skyBoxGeometry  = new THREE.SphereGeometry(500, 128, 128);   
 	var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x9999ff,depthWrite: false, side: THREE.BackSide } );
+    skyBoxMaterial.map    = THREE.ImageUtils.loadTexture('img/SkyDome/Sky-111604-A.jpg');
 	skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
-   
+    skyBox.frustumCulled=false; 
+    //scene.add(skyBox);
 	//scene.add(skyBox);
 /*skyBoxGeo = new THREE.SphereGeometry(1000, 128, 128);
 skyBoxMat = new THREE.MeshBasicMaterial( { color: 0x9999ff, side: THREE.BackSide } );
 skyBox = new THREE.Mesh( skyBoxGeo, skyBoxMat );
-skyBox.frustumCulled=false; 
+
 */
+//scene.add(skyBox);
 camera.add(skyBox );
 scene.add( camera );
 //scene.add(skyBox);
@@ -324,33 +327,34 @@ update(delta);
   
 rotateLight.update(lightPoint,cube.position.x,cube.position.y,cube.position.z,90*delta,50,2,1);
 //EARTH + MOON   
-rotateEarth.update(earth,sun.position.x,sun.position.y,sun.position.z,-4*delta,150,2,1);    
-earth.rotation.y+=getRadians(10*delta);    
-rotateMoon.update(moon,earth.position.x,earth.position.y,earth.position.z,-10*delta,30,2,1);
+rotateEarth.update(earth,sun.position.x,sun.position.y,sun.position.z,4*delta,150,2,1);    
+earth.rotation.y+=getRadians(-10*delta);    
+rotateMoon.update(moon,earth.position.x,earth.position.y,earth.position.z,10*delta,30,2,1);
                
-rotateMercury.update(mercury,sun.position.x,sun.position.y,sun.position.z,-3*delta,58,2,1);
-mercury.rotation.y+=getRadians(6*delta);      
+rotateMercury.update(mercury,sun.position.x,sun.position.y,sun.position.z,3*delta,58,2,1);
+mercury.rotation.y+=getRadians(-6*delta);      
 //venus
-rotateVenus.update(venus,sun.position.x,sun.position.y,sun.position.z,-3*delta,108,2,0);
-venus.rotation.y+=getRadians(-8*delta);     
+rotateVenus.update(venus,sun.position.x,sun.position.y,sun.position.z,5*delta,108,2,0);
+venus.rotation.y+=getRadians(+8*delta);     
 //Mars
-rotateMars.update(mars,sun.position.x,sun.position.y,sun.position.z,-4*delta,227,2,1);    
-mars.rotation.y+=getRadians(8*delta);    
+rotateMars.update(mars,sun.position.x,sun.position.y,sun.position.z,4.5*delta,227,2,1);    
+mars.rotation.y+=getRadians(-8*delta);    
 
-rotateJupiter.update(jupiter,sun.position.x,sun.position.y,sun.position.z,-3*delta,350,2,1);
-jupiter.rotation.y+=getRadians(8*delta);       
+rotateJupiter.update(jupiter,sun.position.x,sun.position.y,sun.position.z,3.5*delta,350,2,1);
+jupiter.rotation.y+=getRadians(-8*delta);       
     
-rotateSaturn.update(saturn,sun.position.x,sun.position.y,sun.position.z,-2*delta,425,2,1);
-saturn.rotation.y+=getRadians(7*delta);  
+rotateSaturn.update(saturn,sun.position.x,sun.position.y,sun.position.z,2.5*delta,425,2,1);
+saturn.rotation.y+=getRadians(-7*delta);  
 
-rotateUranus.update(uranus,sun.position.x,sun.position.y,sun.position.z,-1*delta,500,2,1);
-uranus.rotation.y+=getRadians(7*delta);      
+rotateUranus.update(uranus,sun.position.x,sun.position.y,sun.position.z,1*delta,500,2,1);
+uranus.rotation.y+=getRadians(-7*delta);      
    
-rotatePluto.update(pluto,sun.position.x,sun.position.y,sun.position.z,-1.5*delta,550,2,1);
-pluto.rotation.y+=getRadians(4*delta);  
+rotatePluto.update(pluto,sun.position.x,sun.position.y,sun.position.z,1.5*delta,550,2,1);
+pluto.rotation.y+=getRadians(-4*delta);  
     
 collide();
 
+skyBox.rotation.x+=getRadians(1*delta);
 editor.follow(cube.position.x, cube.position.y, cube.position.z-6/2);   
    
 //cameraFollow

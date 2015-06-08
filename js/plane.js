@@ -33,6 +33,8 @@ var planeHs=500;
 var planeGeo =  new THREE.PlaneGeometry(planeW,planeH,planeWs,planeHs);
  
 var planeMat = new THREE.MeshPhongMaterial( { map : grassDehydrated } );
+//planeMat.bumpMap    = THREE.ImageUtils.loadTexture('img/Planets/Earth/earthbump1k.jpg');
+//planeMat.bumpScale = 0.5;
 var planeMat2 = new THREE.MeshLambertMaterial( { map : sand } );
 var planeMat3 = new THREE.MeshPhongMaterial( { map : grass } );
 var planeMat4 = new THREE.MeshLambertMaterial( { map : stone } );

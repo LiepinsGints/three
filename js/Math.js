@@ -218,9 +218,10 @@ default:
 break;
 
 }
-    
-var s1=QuatMulti(cosAngle,-qi,-qj,-qk,0,x-Xc,y-Yc,z-Zc);
-var s2=QuatMulti(s1[0],s1[1],s1[2],s1[3],cosAngle,qi,qj,qk);
+//var s1=QuatMulti(cosAngle,qi,qj,qk,0,x,y,z);
+//var s2=QuatMulti(s1[0],s1[1],s1[2],s1[3],cosAngle,-qi,-qj,-qk);       
+var s1=QuatMulti(cosAngle,qi,qj,qk,0,x-Xc,y-Yc,z-Zc);
+var s2=QuatMulti(s1[0],s1[1],s1[2],s1[3],cosAngle,-qi,-qj,-qk);
 coords=[s2[1]+Xc,s2[2]+Yc,s2[3]+Zc];
     return coords;
 }else return [x,y,z];

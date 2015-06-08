@@ -111,7 +111,7 @@ this.update=function update (delta) {
 	//mesh.translateX( this.movementSpeed*delta*(-1) );
 	//cam.translateX( this.movementSpeed*delta*(-1) );
 	//cam.position.x -= this.movementSpeed*delta;
-	rotateCamera.update(cam,mesh.position.x,mesh.position.y,mesh.position.z,-1,60,2,0);
+	rotateCamera.update(cam,mesh.position.x,mesh.position.y,mesh.position.z,1,60,2,0);
 	cam.up = new THREE.Vector3(0,0,1);
 	cam.lookAt(new THREE.Vector3(mesh.position.x,mesh.position.y,mesh.position.z));
 	mesh.rotation.z+=1* Math.PI / 180;
@@ -122,7 +122,7 @@ this.update=function update (delta) {
 	//mesh.translateX( this.movementSpeed*delta );
 	//cam.translateX( this.movementSpeed*delta );
 	//cam.position.x += this.movementSpeed*delta;
-	rotateCamera.update(cam,mesh.position.x,mesh.position.y,mesh.position.z,1,60,2,0);
+	rotateCamera.update(cam,mesh.position.x,mesh.position.y,mesh.position.z,-1,60,2,0);
 	cam.up = new THREE.Vector3(0,0,1);
 	cam.lookAt(new THREE.Vector3(mesh.position.x,mesh.position.y,mesh.position.z));
 	mesh.rotation.z+=-1* Math.PI / 180;
