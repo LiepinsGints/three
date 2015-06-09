@@ -908,64 +908,8 @@ this.DumpPlane=function DumpPlane(plane,width,height,planeWs,planeHs){
     for(i=0;i<totalVertices;i++){
         if(plane.geometry.vertices[i].z!=0)
         planeDefs+="plane.geometry.vertices["+i+"].z="+plane.geometry.vertices[i].z+";\n";
-   
-         if(plane.geometry.vertices[i].z<0){
-             divider=i/(planeWs+1);
-            row=Math.ceil(divider);
-             
-            column=i-(row-1)*(planeWs+1);
-            /*alert(
-                "planeWs:"+planeWs+"\n"+
-                "i:"+i+"\n"+
-                  "planeWs+1:"+(planeWs+1)+"\n"+
-                "column:"+column+"\n"
-                  +"row:"+row+"\n");*/
-            resultPart=(row-1)*(planeWs);    
-            seg1=resultPart+(column);
-            seg2=resultPart+column-1;
-            seg3=seg1-planeWs;
-            seg4=seg3-1;              
-                planeDefs+="plane.geometry.faces["+(seg4*2)+"].materialIndex = 1;\n";
-                planeDefs+="plane.geometry.faces["+(seg4*2+1)+"].materialIndex = 1;\n";
-                
-                planeDefs+="plane.geometry.faces["+(seg1*2)+"].materialIndex = 1;\n";
-                planeDefs+="plane.geometry.faces["+(seg1*2+1)+"].materialIndex = 1;\n";
-                
-                planeDefs+="plane.geometry.faces["+(seg3*2)+"].materialIndex = 1;\n";
-                planeDefs+="plane.geometry.faces["+(seg3*2+1)+"].materialIndex = 1;\n";
-             
-                planeDefs+="plane.geometry.faces["+(seg2*2)+"].materialIndex = 1;\n";
-                planeDefs+="plane.geometry.faces["+(seg2*2+1)+"].materialIndex = 1;\n";
-             
-         }else if(plane.geometry.vertices[i].z>10){
-             divider=i/(planeWs+1);
-            row=Math.ceil(divider);
-             
-            column=i-(row-1)*(planeWs+1);
-            /*alert(
-                "planeWs:"+planeWs+"\n"+
-                "i:"+i+"\n"+
-                  "planeWs+1:"+(planeWs+1)+"\n"+
-                "column:"+column+"\n"
-                  +"row:"+row+"\n");*/
-            resultPart=(row-1)*(planeWs);    
-            seg1=resultPart+(column);
-            seg2=resultPart+column-1;
-            seg3=seg1-planeWs;
-            seg4=seg3-1;              
-                planeDefs+="plane.geometry.faces["+(seg4*2)+"].materialIndex = 2;\n";
-                planeDefs+="plane.geometry.faces["+(seg4*2-1)+"].materialIndex = 2;\n";
-                
-                planeDefs+="plane.geometry.faces["+(seg1*2)+"].materialIndex = 2;\n";
-                planeDefs+="plane.geometry.faces["+(seg1*2-1)+"].materialIndex = 2;\n";
-                
-                planeDefs+="plane.geometry.faces["+(seg3*2)+"].materialIndex = 2;\n";
-                planeDefs+="plane.geometry.faces["+(seg3*2-1)+"].materialIndex = 2;\n";
-             
-                planeDefs+="plane.geometry.faces["+(seg2*2)+"].materialIndex = 2;\n";
-                planeDefs+="plane.geometry.faces["+(seg2*2-1)+"].materialIndex = 2;\n";
-             
-         }
+         
+        
     }
   
     
