@@ -69,7 +69,7 @@ function normalVector (x,y,z,distance) {
 var coords=[x/distance,y/distance,z/distance];
 return coords;
 }	
-
+//
 /*********************************/
 /*******Quaternion multiplication*******/
 /*********************************/

@@ -117,6 +117,7 @@ this.update=function update (delta) {
 	mesh.rotation.z+=1* Math.PI / 180;
    // editor.collisionPlane2(plane,300,300,mesh,cam);  
   }
+    //
   if(this.moveRight==1){
 	//mesh.position.x += this.movementSpeed*delta; 
 	//mesh.translateX( this.movementSpeed*delta );

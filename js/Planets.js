@@ -16,7 +16,7 @@ function Planets(){
         material.map    = THREE.ImageUtils.loadTexture('img/Planets/Sun/sunmap.jpg');      
         return sunMesh;
     }
-    
+    //
     
      /****Create mercury*/
     this.createPlanet=function createPlanet (materialMap,bumpMap,bumpScale,radius,widthSeg, heightSeg) {

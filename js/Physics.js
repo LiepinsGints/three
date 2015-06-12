@@ -286,7 +286,7 @@ for(j=0;j<vYCube;j++){
         }
     }//<-- for VxCube end
 }//<-- for vYcube end
-    
+    //
 /******* Apply and calculate plane collision  *******/    
   //  output.value+="Highest zvalue:"+highestZvalue+"\n";
     if(highestZvalue==-9999999999)highestZvalue=plane.geometry.vertices[startVertice].z;
