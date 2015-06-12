@@ -20,7 +20,67 @@
 <script type="text/javascript" src="js/Physics.js"></script>
 <script type="text/javascript" src="js/Planets.js"></script> 
     
-<script type="text/javascript" src="js/Plane.js"></script>    
+    
+
+
+<script id="vertexShader" type="x-shader/x-vertex">
+       varying vec4 col;
+       //uniform vec4 colorC;
+       //uv texture in three.js
+       uniform sampler2D grass1;
+       uniform sampler2D sand1;
+       uniform sampler2D stone4;
+       uniform sampler2D ice1;
+       uniform vec4 colorC;
+       varying vec3 my_pos;//position
+       varying vec2 my_uv;//texture for passing to fragment shader must declare same name...
+       void main() {
+           
+            my_pos=position;
+            my_uv =uv;
+            
+            if(my_pos.z <=2.0){
+                col =  texture2D(sand1,my_uv);
+                //col =  vec4(0.0, 0.2, 0.4, 1.0);
+            }else if(my_pos.z>2.0 && my_pos.z<=6.0) {
+             //col = colorC;
+             col =  texture2D(grass1,my_uv);
+            }
+            else if(my_pos.z>6.0 && my_pos.z<=12.0){
+                col =  texture2D(stone4,my_uv);
+                //col = colorC;
+            }else{
+                 col =  texture2D(ice1,my_uv);
+            }
+           // col= vec4(0.0, 0.2, 0.4, 1.0);
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+           
+        }
+</script>
+
+<script id="fragmentShader" type="x-shader/x-fragment">
+     varying vec4 col;
+    precision mediump float;
+    varying vec3 my_pos;
+    
+    
+    varying vec2 my_uv;
+    
+       void main(void) {
+               
+           /* if(my_pos.z <=2.0){
+             gl_FragColor = colorC;
+            }else if(my_pos.z>2.0 && my_pos.z<=6.0) {
+              gl_FragColor =  texture2D(grass1,my_uv);
+            }
+            else{
+              gl_FragColor =  vec4(0.0, 0.2, 0.4, 1.0);
+            }*/
+             gl_FragColor=col;
+        }
+</script>
+
+<script type="text/javascript" src="js/Plane.js"></script>
 <!-- some tutorial https://stemkoski.github.io/Three.js/#mesh-movement-->
 <!--free models https://clara.io/view/19a8b999-4807-4252-be15-043b1f6e265c-->
 </head>
@@ -138,7 +198,66 @@ pluto.position.y=50;
 scene.add(pluto);
 rotatePluto= new  RotateArroundPoint(pluto,sun.position.x,sun.position.y,sun.position.z,1,550,2,1);
 
+    
+//rings test
+torusGeometry    = new THREE.TorusGeometry( 40, 0.1 , 50 ,50); 
+torusMaterial    = new THREE.MeshPhongMaterial(); 
+torusMesh    = new THREE.Mesh( torusGeometry, torusMaterial );  
+torusMaterial.map    = THREE.ImageUtils.loadTexture('img/Planets/Saturn/saturnringcolorthumb.jpg');
+torusMesh.rotation.x=getRadians(90);    
+saturn.add(torusMesh);
+torusGeometry    = new THREE.TorusGeometry( 41, 0.1 , 50 ,50); 
+torusMaterial    = new THREE.MeshPhongMaterial(); 
+torusMesh    = new THREE.Mesh( torusGeometry, torusMaterial );  
+torusMaterial.map    = THREE.ImageUtils.loadTexture('img/Planets/Saturn/saturnringcolorthumb.jpg');
+torusMesh.rotation.x=getRadians(90);    
+saturn.add(torusMesh);
+torusGeometry    = new THREE.TorusGeometry( 42, 0.1 , 50 ,50); 
+torusMaterial    = new THREE.MeshPhongMaterial(); 
+torusMesh    = new THREE.Mesh( torusGeometry, torusMaterial );  
+torusMaterial.map    = THREE.ImageUtils.loadTexture('img/Planets/Saturn/saturnringcolorthumb.jpg');
+torusMesh.rotation.x=getRadians(90);    
+saturn.add(torusMesh);    
+torusGeometry    = new THREE.TorusGeometry( 43, 0.1 , 50 ,50); 
+torusMaterial    = new THREE.MeshPhongMaterial(); 
+torusMesh    = new THREE.Mesh( torusGeometry, torusMaterial );  
+torusMaterial.map    = THREE.ImageUtils.loadTexture('img/Planets/Saturn/saturnringcolorthumb.jpg');
+torusMesh.rotation.x=getRadians(90);    
+saturn.add(torusMesh);
+torusGeometry    = new THREE.TorusGeometry( 44, 0.1 , 50 ,50); 
+torusMaterial    = new THREE.MeshPhongMaterial(); 
+torusMesh    = new THREE.Mesh( torusGeometry, torusMaterial );  
+torusMaterial.map    = THREE.ImageUtils.loadTexture('img/Planets/Saturn/saturnringcolorthumb.jpg');
+torusMesh.rotation.x=getRadians(90);    
+saturn.add(torusMesh);
+torusGeometry    = new THREE.TorusGeometry( 45, 0.1 , 50 ,50); 
+torusMaterial    = new THREE.MeshPhongMaterial(); 
+torusMesh    = new THREE.Mesh( torusGeometry, torusMaterial );  
+torusMaterial.map    = THREE.ImageUtils.loadTexture('img/Planets/Saturn/saturnringcolorthumb.jpg');
+torusMesh.rotation.x=getRadians(90);    
+saturn.add(torusMesh);   
+    
+torusGeometry    = new THREE.TorusGeometry( 46, 0.1 , 50 ,50); 
+torusMaterial    = new THREE.MeshPhongMaterial(); 
+torusMesh    = new THREE.Mesh( torusGeometry, torusMaterial );  
+torusMaterial.map    = THREE.ImageUtils.loadTexture('img/Planets/Saturn/saturnringcolorthumb.jpg');
+torusMesh.rotation.x=getRadians(90);    
+saturn.add(torusMesh);
+torusGeometry    = new THREE.TorusGeometry( 47, 0.1 , 50 ,50); 
+torusMaterial    = new THREE.MeshPhongMaterial(); 
+torusMesh    = new THREE.Mesh( torusGeometry, torusMaterial );  
+torusMaterial.map    = THREE.ImageUtils.loadTexture('img/Planets/Saturn/saturnringcolorthumb.jpg');
+torusMesh.rotation.x=getRadians(90);    
+saturn.add(torusMesh);
+torusGeometry    = new THREE.TorusGeometry( 48, 0.1 , 50 ,50); 
+torusMaterial    = new THREE.MeshPhongMaterial(); 
+torusMesh    = new THREE.Mesh( torusGeometry, torusMaterial );  
+torusMaterial.map    = THREE.ImageUtils.loadTexture('img/Planets/Saturn/saturnringcolorthumb.jpg');
+torusMesh.rotation.x=getRadians(90);    
+saturn.add(torusMesh);      
+//torusMesh.position.z=10;    
 
+    
 rotatePlanets= new  RotateArroundPoint(earth,sun.position.x,sun.position.y,sun.position.z,1,150,2,0);
 
                                                                                            

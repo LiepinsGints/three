@@ -35,50 +35,49 @@ function keyDown(event){
      cube.rotation.z+=1* Math.PI / 180;
     break; 
 	///end rotate
-	case 97 : //x axes camera
-  
-        editor.DumpPlane(plane,planeW,planeH,planeWs,planeHs);
-		//var quaternion = new THREE.Quaternion();
-		//quaternion.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI / 8 );
-		//camera.setRotationFromQuaternion( quaternion );
-		
-   		//rotateCamera.update(camera,cube.position.x,cube.position.y,cube.position.z,1,60,0,1,0);
-		//camera.up = new THREE.Vector3(0,0,1);
-		//camera.lookAt(new THREE.Vector3(cube.position.x,cube.position.y,cube.position.z));
+	case 97 : //x axes camera		
+   		rotateCamera.update(camera,cube.position.x,cube.position.y,cube.position.z,1,60,0,0);
+		camera.up = new THREE.Vector3(0,0,1);
+		camera.lookAt(new THREE.Vector3(cube.position.x,cube.position.y,cube.position.z));
 		
 		
 		//camera.lookAt(new THREE.Vector3(0,0,0));
     break;
 	case 98 : //y axes camera
-		
-		//rotateCamera.update(camera,cube.position.x,cube.position.y,cube.position.z,1,60,1,1,0);
-		//camera.up = new THREE.Vector3(0,0,1);
-		//camera.lookAt(new THREE.Vector3(cube.position.x,cube.position.y,cube.position.z));
+		rotateCamera.update(camera,cube.position.x,cube.position.y,cube.position.z,1,60,1,0);
+		camera.up = new THREE.Vector3(0,0,1);
+		camera.lookAt(new THREE.Vector3(cube.position.x,cube.position.y,cube.position.z));
     break;
 	case 99 : //z axes camera
 		
-		//rotateCamera.update(camera,cube.position.x,cube.position.y,cube.position.z,1,60,2,1,0);
-		//camera.up = new THREE.Vector3(0,0,1);
-		//camera.lookAt(new THREE.Vector3(cube.position.x,cube.position.y,cube.position.z));
+		rotateCamera.update(camera,cube.position.x,cube.position.y,cube.position.z,1,60,2,0);
+		camera.up = new THREE.Vector3(0,0,1);
+		camera.lookAt(new THREE.Vector3(cube.position.x,cube.position.y,cube.position.z));
     break;
 		case 100 : //x axes camera
 		
-   		//rotateCamera.update(camera,cube.position.x,cube.position.y,cube.position.z,1,60,0,-1,0);
-		//camera.up = new THREE.Vector3(0,0,1);
-		//camera.lookAt(new THREE.Vector3(cube.position.x,cube.position.y,cube.position.z));
+   		rotateCamera.update(camera,cube.position.x,cube.position.y,cube.position.z,-1,60,0,0);
+		camera.up = new THREE.Vector3(0,0,1);
+		camera.lookAt(new THREE.Vector3(cube.position.x,cube.position.y,cube.position.z));
     break;
 	case 101 : //y axes camera
 		
-		//rotateCamera.update(camera,cube.position.x,cube.position.y,cube.position.z,1,60,1,-1,0);
-		//camera.up = new THREE.Vector3(0,0,1);
-		//camera.lookAt(new THREE.Vector3(cube.position.x,cube.position.y,cube.position.z));
+		rotateCamera.update(camera,cube.position.x,cube.position.y,cube.position.z,-1,60,1,0);
+		camera.up = new THREE.Vector3(0,0,1);
+		camera.lookAt(new THREE.Vector3(cube.position.x,cube.position.y,cube.position.z));
     break;
 	case 102 : //z axes camera
 		
+		rotateCamera.update(camera,cube.position.x,cube.position.y,cube.position.z,-1,60,2,0);
+		camera.up = new THREE.Vector3(0,0,1);
+		camera.lookAt(new THREE.Vector3(cube.position.x,cube.position.y,cube.position.z));
+    break;
+    case 103 : //z axes camera
+		 editor.DumpPlane(plane,planeW,planeH,planeWs,planeHs);
 		//rotateCamera.update(camera,cube.position.x,cube.position.y,cube.position.z,1,60,2,-1,0);
 		//camera.up = new THREE.Vector3(0,0,1);
 		//camera.lookAt(new THREE.Vector3(cube.position.x,cube.position.y,cube.position.z));
-    break;
+    break;        
 	case 107 : //inrease terrain
      //editPlane(planePos.getVertices(planeW, planeH, planeWs, planeHs,cube.position.x,cube.position.y),1,plane);
         editor.editPlaneSphera(plane,planeWs,planeHs,spheraEditorMesh,-1);         

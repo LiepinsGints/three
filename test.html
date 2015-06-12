@@ -1,354 +1,277 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Tests</title>    
-<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
-  <script type="text/javascript" src="js/three.js"></script> 
-    <script type="text/javascript">
-    /*********************************/
-/*******Degress to radian*******/
-/*********************************/
-function getRadians(degrees){
-    return degrees*Math.PI/180;    
-}
-/*********************************/
-/*******radian to degreesn*******/
-/*********************************/
-function getDegrees(radians){
-   return radians*180/Math.PI; 
-}
-/*******pythagorean theorem*******/
-/*********************************/
-/*********************************/
-function pythagor (a,b,c) {
-return Math.sqrt(Math.pow(a,2)+Math.pow(b,2)+Math.pow(c,2));
-}
-/*********************************/
-/*******Object rotation correction*******/
-/*********************************/
-//361 degrees =>1 degree
-function correctRotation(radians){
-    deg = getDegrees(radians);
-    contains=0;
-    if(deg>=0){
-    contains=Math.floor(deg/360);
-    }else{
-    contains=Math.ceil(deg/360);    
-    }
-    if(contains!=0){
-        //deg-=contains*360;
-        deg=deg-360*contains;
-        return getRadians(deg); 
-    }else
-        return radians;
-       
-}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Index</title>
+<link rel="stylesheet" href="css/layout.css" />
 
-
-/*********************************/
-/*******Normal vector*******/
-/*********************************/
-function normalVector (x,y,z,distance) {
-var coords=[x/distance,y/distance,z/distance];
-return coords;
-}	
-/*********************************/
-/*******dot product*******/
-/*********************************/
-function getDotProduct(x,y,z,x1,y1,z1){
-    return x*x1+y*y1+z*z1;   
-}
-/*********************************/
-/*******vector from 2 points*******/
-/*********************************/
-function getVectorFrom2Points(x,y,z,x1,y1,z1){
-  vector=[x1-x,y1-y,z1-z];
-    return vector;
+<!--<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>-->
+<script type="text/javascript" src="js/three.js"></script>
+<script type="text/javascript" src="js/Math.js"></script>
+<script type="text/javascript" src="js/label.js"></script>
+<script type="text/javascript" src="js/CameraPlayer.js"></script>
+<script type="text/javascript" src="js/MeshMove.js"></script>
+<script type="text/javascript" src="js/planePos.js"></script>
+<script type="text/javascript" src="js/RotateArroundPoint.js"></script>
+<script type="text/javascript" src="js/ConsoleCommands.js"></script>
+<script type="text/javascript" src="js/Controls.js"></script>
+<script type="text/javascript" src="js/ObjectSpawns.js"></script>
+<script type="text/javascript" src="js/Editor.js"></script>
+<script type="text/javascript" src="js/Physics.js"></script>
+<script type="text/javascript" src="js/Planets.js"></script> 
     
-}
-/*****************************************/
-/******* point on line x and y 2d*******/
-/*****************************************/
-function lineCrossX(Ax,Ay,Bx,By,pointX){
-   m=(Ay-By)/(Ax-Bx);
-   y=m*(pointX-Ax)+Ay; 
-   return y;
-}
-function lineCrossY(Ax,Ay,Bx,By,pointY){
-    m=(Ay-By)/(Ax-Bx);
-    x=(-pointY+Ay-m*Ax)/m*(-1);
-    return x;
-}
-/*****************************************/
-/******* 2d line cross point*******/
-/*****************************************/
-function lineCrossPoint(Ax,Ay,Ax2,Ay2,Bx,By,Bx2,By2){
-    point=[-999999,-999999];
-    m1=(Ay-Ay2)/(Ax-Ax2);
-    m2=(By-By2)/(Bx-Bx2);
+<script type="text/javascript" src="js/Plane.js"></script>    
+
+    
+<script src="js/shaders/ConvolutionShader.js"></script>
+<script src="js/shaders/CopyShader.js"></script>
+<script src="js/shaders/FilmShader.js"></script>
+
+<script src="js/postprocessing/EffectComposer.js"></script>
+<script src="js/postprocessing/ShaderPass.js"></script>
+<script src="js/postprocessing/MaskPass.js"></script>
+<script src="js/postprocessing/RenderPass.js"></script>
+<script src="js/postprocessing/BloomPass.js"></script>
+<script src="js/postprocessing/FilmPass.js"></script>
+
+<script id="vertexShader" type="x-shader/x-vertex">
+       varying vec4 col;
+       //uniform vec4 colorC;
+       //uv texture in three.js
+       uniform sampler2D grass1;
+       uniform vec4 colorC;
+       varying vec3 my_pos;//position
+       varying vec2 my_uv;//texture for passing to fragment shader must declare same name...
+       void main() {
+           
+            my_pos=position;
+            my_uv =uv;
+            
+            if(my_pos.z <=2.0){
+             col = colorC;
+            }else if(my_pos.z>2.0 && my_pos.z<=6.0) {
+             //col = colorC;
+             col =  texture2D(grass1,my_uv);
+            }
+            else{
+              col =  vec4(0.0, 0.2, 0.4, 1.0);
+            }
+           // col= vec4(0.0, 0.2, 0.4, 1.0);
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+           
+        }
+</script>
+
+<script id="fragmentShader" type="x-shader/x-fragment">
+     varying vec4 col;
+    precision mediump float;
+    varying vec3 my_pos;
     
     
-    if(m1==0 || m2==0){
-          if(m1==0 && m2!=0){
-              if(Ax-Ax2==0){
-                  point=[Ax,lineCrossX(Bx,By,Bx2,By2,Ax)];
-                  return point;
-              }else if(Ay-Ay2==0){
-                  point=[lineCrossY(Bx,By,Bx2,By2,Ay),Ay];
-                  return point;
-             }
-          }
-         else if(m1!=0 && m2==0){
-              if(Bx-Bx2==0){
-                 point=[Ax,lineCrossX(Ax,Ay,Ax2,Ay2,Bx)];
-                 return point;
-              }else if(By-By2==0){
-                  point=[lineCrossY(Ax,Ay,Ax2,Ay2,By),By];
-                  return point;
-              }
-         }     
-        else if(m1==0 && m2 ==0){
-             if(Ax-Ax2==0 && By-By2==0){
-                 point=[Ax,By];
-                 return point;
-             }
-             if(Bx-Bx2==0 && Ay-Ay2==0){
-                 point=[Bx,Ay];
-                 return point;
-             }
-        
-        }   
-    }else if(m1!=0 && m2!=0){
-        i1=(m1*(-Ax)+Ay)*(-1);
-        i2=(m2*(-Bx)+By);
-        x=(i1+i2)/(m1+m2*(-1));
-        point=[x,lineCrossX(Ax,Ay,Ax2,Ay2,x)];
-        return point;
-    }else{
-    return [0,0];
-    }
-}
-/*****************************************/
-/******* sin value *******/
-/*****************************************/
-function sinValue(a,c){
-    sin=a/c;   
-    return sin;
-}
-/*********************************/
-/*******barymetric check if point in triangle*******/
-/*********************************/
-function inTriangle(Ax,Ay,Az,Bx,By,Bz,Cx,Cy,Cz,Px,Py,Pz){
-v0 = getVectorFrom2Points(Ax,Ay,Az,Cx,Cy,Cz);
-v1 = getVectorFrom2Points(Ax,Ay,Az,Bx,By,Bz);    
-v2 = getVectorFrom2Points(Ax,Ay,Az,Px,Py,Pz);
+    varying vec2 my_uv;
+    
+       void main(void) {
+               
+           /* if(my_pos.z <=2.0){
+             gl_FragColor = colorC;
+            }else if(my_pos.z>2.0 && my_pos.z<=6.0) {
+              gl_FragColor =  texture2D(grass1,my_uv);
+            }
+            else{
+              gl_FragColor =  vec4(0.0, 0.2, 0.4, 1.0);
+            }*/
+             gl_FragColor=col;
+        }
+</script>
+<!-- backup
 
-dot00 = getDotProduct(v0[0],v0[1],v0[2],v0[0],v0[1],v0[2]);
-dot01 = getDotProduct(v0[0],v0[1],v0[2],v1[0],v1[1],v1[2]);
-dot02 = getDotProduct(v0[0],v0[1],v0[2],v2[0],v2[1],v2[2]);
-dot11 = getDotProduct(v1[0],v1[1],v1[2],v1[0],v1[1],v1[2]);
-dot12 = getDotProduct(v1[0],v1[1],v1[2],v2[0],v2[1],v2[2]);
+<script id="vertexShader" type="x-shader/x-vertex">
+       //varying vec4 col;
+       //uniform vec4 colorC;
+       //uv texture in three.js
+       varying vec3 my_pos;//position
+       varying vec2 my_uv;//texture for passing to fragment shader must declare same name...
+       void main() {
+           
+            my_pos=position;
+            my_uv =uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+           
+        }
+</script>
 
-// Compute barycentric coordinates
-invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
-u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+<script id="fragmentShader" type="x-shader/x-fragment">
+     //varying vec4 col;
+    precision mediump float;
+    varying vec3 my_pos;
+    uniform vec4 colorC;
+    uniform sampler2D grass1;
+    varying vec2 my_uv;
+    
+       void main(void) {
+               
+            if(my_pos.z <=2.0){
+             gl_FragColor = colorC;
+            }else if(my_pos.z>2.0 && my_pos.z<=6.0) {
+              gl_FragColor =  texture2D(grass1,my_uv);
+            }
+            else{
+              gl_FragColor =  vec4(0.0, 0.2, 0.4, 1.0);
+            }
+        }
+</script>
 
-// Check if point is in triangle
-if((u >= 0) && (v >= 0) && (u + v < 1))
-return 1;
-else
-return 0;
+
+
+
+-->
+    
+    
+    
+<!-- shadow test  --->    
+<script id="vertexShader1" type="x-shader/x-vertex">
+varying vec2 vUv;
+varying vec3 vecPos;
+varying vec3 vecNormal;
  
+void main() {
+    vUv = uv;
+    // Since the light is on world coordinates,
+    // I'll need the vertex position in world coords too
+    // (or I could transform the light position to view
+    // coordinates, but that would be more expensive)
+    vecPos = (modelMatrix * vec4(position, 1.0 )).xyz;
+    // That's NOT exacly how you should transform your
+    // normals but this will work fine, since my model
+    // matrix is pretty basic
+    vecNormal = (modelMatrix * vec4(normal, 0.0)).xyz;
+    gl_Position = projectionMatrix * viewMatrix *
+                  vec4(vecPos, 1.0);
 }
+</script>
 
-
-/*********************************/
-/*******Quaternion multiplication*******/
-/*********************************/
-function QuatMulti(w1,i1,j1,k1,w2,i2,j2,k2) {
-	w=(w1*w2)-(i1*i2)-(j1*j2)-(k1*k2);
-	x=(w1*i2)+(i1*w2)+(j1*k2)-(k1*j2);
-    output.innerHTML=output.innerHTML+"(w1*i2):"+(w1*i2)+
-        " +(i1*w2):"+(i1*w2)
-        +" (j1*k2):"+j1*k2
-        +" -(k1*j2):"
-        +(k1*j2)+ " <br />"; 
-    output.innerHTML=output.innerHTML+"x:"+Math.round(x) +" <br />"; 
-	y=(w1*j2)+(j1*w2)+(k1*i2)-(i1*k2);
-	z=(w1*k2)+(k1*w2)+(i1*j2)-(j1*i2);
-	var quat=[w,x,y,z];
-	return quat;
-}
-
-
-/*********************************/
-/*******quaternion function*******/
-/*********************************/
-/*
-x,y,z - rotating object coords
-Xc,Yc,Zc - center coordinates
-Angle - angle increment 
-radius- distance between objects
-axes (axe rotation):
-	 0-x
-	 1-y
-	 2-z
-type=-1 reverse
-type= 1 clockwise 
-
-centerCheck
-0:disable
-1:enable
-*/
-function quaternion(x,y,z,Xc,Yc,Zc,angle,axes){
-//quat calculation
-if(angle!=0){    
-var sinAngle=Math.sin(getRadians(angle/2));
-output.innerHTML=output.innerHTML+"sin:"+sinAngle+"<br />";     
-var cosAngle=Math.cos(getRadians(angle/2));
-output.innerHTML=output.innerHTML+"cos:"+cosAngle+"<br />";        
-var qi,qj,qk;   
-//
-    
-    
-switch(axes){
-case 0:
-qi= sinAngle*(Xc+1);
-qj= sinAngle*Yc;
-qk= sinAngle*Zc;
-output.innerHTML=output.innerHTML+"qi:"+qi+" qj:"+qj+" qk:"+qk+ " <br />"; 
-break;
-case 1:
-qi= sinAngle*Xc;
-qj= sinAngle*(Yc+1);
-qk= sinAngle*Zc;
-output.innerHTML=output.innerHTML+"qi:"+qi+" qj:"+qj+" qk:"+qk+ " <br />"; 
-break;        
-case 2:
-qi= sinAngle*Xc;
-qj= sinAngle*Yc;
-qk= sinAngle*(Zc+1);
-output.innerHTML=output.innerHTML+"qi:"+qi+" qj:"+qj+" qk:"+qk+ " <br />"; 
-break;
-}
-    
-var s1=QuatMulti(cosAngle,qi,qj,qk,0,x,y,z);
-output.innerHTML=output.innerHTML+"S1x:"+s1[1]+" y:"+s1[2]+" z:"+s1[3]+" w:"+s1[0]+ " <br />"; 
-var s2=QuatMulti(s1[0],s1[1],s1[2],s1[3],cosAngle,-qi,-qj,-qk);
-output.innerHTML=output.innerHTML+"S2x:"+s2[1]+" y:"+s2[2]+" z:"+s2[3]+" w:"+s2[0]+ " <br />";     
-coords=[s2[1],s2[2],s2[3]];
-    return coords;
-}else return [x,y,z];
-}
-
+<script id="fragmentShader1" type="x-shader/x-fragment">
+precision highp float;
  
-    </script>
-    
+varying vec2 vUv;
+varying vec3 vecPos;
+varying vec3 vecNormal;
+ 
+uniform vec4 colorC;
+uniform sampler2D grass1;
+ 
+uniform vec3 pointLightColor[MAX_POINT_LIGHTS];
+uniform vec3 pointLightPosition[MAX_POINT_LIGHTS];
+uniform float pointLightDistance[MAX_POINT_LIGHTS];
+ 
+void main(void) {
+    // Pretty basic lambertian lighting...
+    vec4 addedLights = vec4(0.0,0.0,0.0, 1.0);
+    for(int l = 0; l < MAX_POINT_LIGHTS; l++) {
+        vec3 lightDirection = normalize(vecPos-pointLightPosition[l]);
+        addedLights.rgb += clamp(dot(-lightDirection,vecNormal), 0.0, 1.0)* pointLightColor[l];
+    }
+    gl_FragColor = texture2D(grass1, vUv)* addedLights;
+}
+
+</script>    
+<!-- some tutorial https://stemkoski.github.io/Three.js/#mesh-movement-->
+<!--free models https://clara.io/view/19a8b999-4807-4252-be15-043b1f6e265c-->
 </head>
- 
+<body>
     
     
-<p id="output"></p>
-   
- <!-- Shaders -->
-	<script type="x-shader/x-vertex" id="vertexshader">
-		
-		// switch on high precision floats
-		#ifdef GL_ES
-		precision highp float;
-		#endif
-		
-		void main()
-		{
-			gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
-		}
-		
-	</script>
-	
-	<script type="x-shader/x-fragment" id="fragmentshader">
-	
-		#ifdef GL_ES
-		precision highp float;
-		#endif
-		
-		void main()
-		{
-			gl_FragColor 	= vec4(1.0,0.0,1.0,1.0);
-		}
-	
-	</script>
-	
-	<!-- End Shaders -->
-   
-    
-    
-    
-    
-<!--http://yase.chnk.us/-->    
-<script>
+<script>			
+			
 
-    var scene = new THREE.Scene();
+            var scene = new THREE.Scene();
 			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
 			var renderer = new THREE.WebGLRenderer();
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
-            var lightAmbient = new THREE.AmbientLight( 0x404040 ); // soft white light
+            //Light
+
+            var lightPoint2 = new THREE.PointLight( 0xFFFFFF, 2, 700 );
+            lightPoint2.position.set( 0, 0, 500 );
+            scene.add( lightPoint2 );
+            //lightPoint.position.z = 100;
+
+           var lightAmbient = new THREE.AmbientLight( 0x404040 ); // soft white light
             scene.add( lightAmbient );
+            //<-- create light end
+            scene.add(plane);
+            camera.position.z=100;
+            camera.position.y-=40;
+            camera.rotation.x=getRadians(40);
+            // My float attribute
+            var attributes = {
+                    size: { type: 'f', value: [] },
+                };
 
-			camera.position.z = 400;
-            // create the sphere's material
-	           var shaderMaterial = new THREE.ShaderMaterial({
-                    vertexShader:   $('#vertexshader').text(),
-                    fragmentShader: $('#fragmentshader').text()
-                });
-	
-	       // set up the sphere vars
-	       var radius = 20, segments = 16, rings = 16;
-	
-	       // create a new mesh with sphere geometry -
-	       // we will cover the sphereMaterial next!
-	       var sphere = new THREE.Mesh(
-           new THREE.SphereGeometry(radius, segments, rings),
-           shaderMaterial);
-	
-        	// add the sphere to the scene
-	       scene.add(sphere);
-    
-    //grass
+            for (var i=0; i < 4; i++) {
+            attributes.size.value[i] = 5 + Math.floor(Math.random() * 10);
+            }
+            //Shader experiments    
+            
+			//var geometry = new THREE.BoxGeometry( 10, 10, 6,6 );
+            geometry = new THREE.PlaneGeometry( 100,100, 25, 25 );
+            for(i=0;i<25*25;i++){
+               geometry.vertices[i].z=Math.floor((Math.random() * 10) + 1);   
+            }
+			shader= {
+              uniforms : {
+                  
+                  colorC:{
+                    type:"v4",
+                    value: new THREE.Vector4(0.3,0.5,0.1,1.0)
+                  },
+                  grass1 :{
+                      type: "t",
+                      value:THREE.ImageUtils.loadTexture("img/textures/Grass/Grass4.png")
+                  }
+              },
+              vertexShader: document.getElementById("vertexShader").textContent,
+              fragmentShader : document.getElementById("fragmentShader").textContent,
+             // lights: true    
+            };
+            /*shader= {
+              uniforms: THREE.UniformsUtils.merge([
+              THREE.UniformsLib['lights'],
+              {
+                 colorC:{type:"v4",value: new THREE.Vector4(0.3,0.5,0.1,1.0)},
+                 grass1 :{type: "t",value:THREE.ImageUtils.loadTexture("img/textures/Grass/Grass4.png")}
+               }
+              ]),
+              vertexShader: document.getElementById('vertexShader1').text,
+              fragmentShader: document.getElementById('fragmentShader1').text,
+              transparent: true,
+              //lights: true
+            };*/
+            material= new THREE.ShaderMaterial(shader);
+            
+            var cube = new THREE.Mesh( geometry, material );
+            cube.position.z=25;
+            
+			scene.add( cube );
 
-
-
-    //1882 *1377
-var planeW=1000;
-var planeH=1000; 
-var planeWs=500;
-var planeHs=500;
-var planeGeo =  new THREE.PlaneGeometry(planeW,planeH,planeWs,planeHs);
- 
-var planeMat = new THREE.MeshPhongMaterial();
- planeMat.map    = THREE.ImageUtils.loadTexture('img/Planets/Earth/earthmap1k.jpg');
- planeMat.bumpMap    = THREE.ImageUtils.loadTexture('img/Planets/Earth/earthbump1k.jpg');
- planeMat.bumpScale = 10;
-var plane = new THREE.Mesh(planeGeo, planeMat);    
-//planeGeo.faces[4950].materialIndex = 1;
-scene.add(plane);
-    
-var lightPoint2 = new THREE.PointLight( 0xFFFFFF, 2, 700 );
-lightPoint2.position.set( 0, 0, 500 );
-scene.add( lightPoint2 );    
-    
+		
+                
 
 			var render = function () {
 				requestAnimationFrame( render );
-
-				
-
+                cube.rotation.z+= getRadians(1);
+			
 				renderer.render(scene, camera);
 			};
 
 			render();
     
     
-</script> 
+    
+</script>
+    
+
+    
+</body>
 </html>

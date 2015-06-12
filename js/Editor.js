@@ -26,10 +26,7 @@ output.value+="State:"+state+" increment: "+increment+" \n";
 		object.scale.x += increment;
 		object.scale.y += increment;
 		object.scale.z += increment;
-        
-        
-    
-        
+
  		state=Number(input.value);
 }
 
@@ -67,17 +64,15 @@ this.editPlaneSphera=function editPlaneSphera(plane,planeWs,planeHs,sphera,heigh
     yPoz=Math.floor(Math.abs((plane.geometry.vertices[0].y-spheraV1[1])/segmentHsize));
     //Get left-upper vertice index
     startVertice=xPoz+yPoz*verticesW;
-    
-   
-    
+
     //get ammount of vertices on x axes
     vXCube=Math.abs(Math.ceil((plane.geometry.vertices[startVertice].x-spheraV2[0])/segmentWsize));
     //get ammount of vertices on y axes
     vYCube=Math.abs(Math.ceil((plane.geometry.vertices[startVertice].y-spheraV2[1])/segmentHsize));
     //increment vertices by some value
-    for(j=0;j<vYCube;j++){
+    for(j=0;j<vYCube+1;j++){
         if(j!=0)startVertice+=verticesW;
-        for(i=startVertice;i<startVertice+vXCube;i++){
+        for(i=startVertice;i<startVertice+vXCube+1;i++){
             d=pythagor(
                 (plane.geometry.vertices[i].x-mesh.position.x),
                 (plane.geometry.vertices[i].y-mesh.position.y),

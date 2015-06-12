@@ -190,40 +190,38 @@ centerCheck
 */
 function quaternion(x,y,z,Xc,Yc,Zc,angle,axes){
 //quat calculation
-if(angle!=0){    
+if(angle!=0 && angle!=360 && angle!=-360){    
 var sinAngle=Math.sin((angle/2) * (Math.PI/180));
 var cosAngle=Math.cos((angle/2) * (Math.PI/180));
-var qi,qj,qk;   
+var qi=0,qj=0,qk=0;   
 switch(axes){
 case 0:
 qi= sinAngle;
-qj= 0;
-qk= 0;
-
+var s1=QuatMulti(cosAngle,qi,qj,qk,0,x-Xc,y-Yc,z-Zc);
+var s2=QuatMulti(s1[0],s1[1],s1[2],s1[3],cosAngle,-qi,-qj,-qk);
+coords=[s2[1]+Xc,s2[2]+Yc,s2[3]+Zc];
+return coords;        
 break;
 case 1:
-qi= 0;
 qj= sinAngle;
-qk= 0;
-
+var s1=QuatMulti(cosAngle,qi,qj,qk,0,x-Xc,y-Yc,z-Zc);
+var s2=QuatMulti(s1[0],s1[1],s1[2],s1[3],cosAngle,-qi,-qj,-qk);
+coords=[s2[1]+Xc,s2[2]+Yc,s2[3]+Zc];
+    return coords;        
 break;
 case 2:
-qi= 0;
-qj= 0;
 qk=sinAngle;
-
+var s1=QuatMulti(cosAngle,qi,qj,qk,0,x-Xc,y-Yc,z-Zc);
+var s2=QuatMulti(s1[0],s1[1],s1[2],s1[3],cosAngle,-qi,-qj,-qk);
+coords=[s2[1]+Xc,s2[2]+Yc,s2[3]+Zc];
+return coords;        
 break;
 default:
 
 break;
 
-}
-//var s1=QuatMulti(cosAngle,qi,qj,qk,0,x,y,z);
-//var s2=QuatMulti(s1[0],s1[1],s1[2],s1[3],cosAngle,-qi,-qj,-qk);       
-var s1=QuatMulti(cosAngle,qi,qj,qk,0,x-Xc,y-Yc,z-Zc);
-var s2=QuatMulti(s1[0],s1[1],s1[2],s1[3],cosAngle,-qi,-qj,-qk);
-coords=[s2[1]+Xc,s2[2]+Yc,s2[3]+Zc];
-    return coords;
+}     
+
 }else return [x,y,z];
 }
 
