@@ -112,6 +112,7 @@ this.update=function update (delta) {
 	
 	    cam.position.x -= this.movementSpeed*delta*a.x;
 	    cam.position.y -= this.movementSpeed*delta*a.y;
+        if( this.controllsLocked==1){this.movementType=2;this.moveForward=0;this.moveBack=1;}
     } else if(movement_status==2){
         this.controllsLocked=1;//1-locked 0 - unlocked
         this.movementType=1;//1- forward 2back   
@@ -119,6 +120,7 @@ this.update=function update (delta) {
         this.controllsLocked=0;//1-locked 0 - unlocked
         this.movementType=0;//1- forward 2back 
         this.moveForward=0;
+        this.moveBack=0;
        
     }
    // editor.collisionPlane2(plane,300,300,mesh,6,6,cam);   
@@ -144,6 +146,7 @@ this.update=function update (delta) {
 	
 	    cam.position.x += this.movementSpeed*delta*a.x;
 	    cam.position.y += this.movementSpeed*delta*a.y;
+        if( this.controllsLocked==1){this.movementType=1;this.moveForward=1;this.moveBack=0;}
     }else if(movement_status==2){
         this.controllsLocked=1;//1-locked 0 - unlocked
         this.movementType=2;//1- forward 2back   
@@ -152,6 +155,7 @@ this.update=function update (delta) {
         this.controllsLocked=0;//1-locked 0 - unlocked
         this.movementType=0;//1- forward 2back   
         this.moveBack=0;
+        this.moveForward=0;
     }
   }
   if(this.moveLeft==1){
