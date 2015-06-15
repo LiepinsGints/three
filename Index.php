@@ -22,7 +22,7 @@
     
     
 
-//
+
 <script id="vertexShader" type="x-shader/x-vertex">
        varying vec4 col;
        //uniform vec4 colorC;
@@ -386,11 +386,13 @@ var directionList = [];
 	
 	var wall = new THREE.Mesh(wallGeometry, wallMaterial);
 	wall.position.set(100, 50, 10);
+    wall.geometry.computeBoundingBox();
 	scene.add(wall);
 	collidableMeshList.push(wall);
 
 	
 	var wall2 = new THREE.Mesh(wallGeometry, wallMaterial);
+    wall2.geometry.computeBoundingBox();
 	wall2.position.set(-150, 50, 5);
 	wall2.rotation.y = 3.14159 / 2;
 	scene.add(wall2);
@@ -430,11 +432,14 @@ var originPoint = cube.position.clone();
 			 //collisionResults[0].object.material.color = new THREE.Color( 0xff0000 );
 			 	collisionResults[0].object.position.x += 1*a.x;
 				collisionResults[0].object.position.y += 1*a.y;
+               // physics.collision(plane,planeWs,planeHs,collisionResults[0].object,
+              //                   10,10
+                //                 ,camera);  
 			 output.value+="Hit \n"
 			}
 	}	
 }
-///<-- colissions end
+//<-- colissions end
 //--> renderer function start
 var render = function () {
 requestAnimationFrame( render );

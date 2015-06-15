@@ -81,7 +81,11 @@ function getPlaneValues(plane,planeWs,planeHs){
     planeW=Math.abs(plane.geometry.vertices[0].x-plane.geometry.vertices[totalVertices-1].x);                                           
     planeH=Math.abs(plane.geometry.vertices[0].y-plane.geometry.vertices[totalVertices-1].y);                                           
     segmentWsize=planeW/planeWs;
-    segmentHsize=planeH/planeHs;                                      
+    segmentHsize=planeH/planeHs;  
+  //  output.value+= "verticesW:"+verticesW+"\n";
+  //  output.value+= "verticesH:"+verticesH+"\n";
+  //  output.value+= "planeW:"+planeW+"\n";
+  //  output.value+= "segmentWsize:"+segmentWsize+"\n";
 }
 /************************************************/    
 /*********Get first left upper vertice coords **********/
@@ -126,7 +130,7 @@ function getPlaneValues(plane,planeWs,planeHs){
 /************************************************/    
 /*********Closest cube vertice to point **********/
 /************************************************/  
-function cubeVerticesNearPoint(x,y){
+function cubeVerticesNearPoint(x,y,xo,yo){
     vertice=[0,999999999999];
        // output.value+="x:"+x+" y:"+y+"\n";
     for(m=0;m<cubeVertices.length;m++){
@@ -136,29 +140,207 @@ function cubeVerticesNearPoint(x,y){
          vertice[1]=d;     
         }
         //output.value+="m:"+m+":"+d+"\n";
+       //output.value+="Cube vert All"+m+" X:"+cubeVertices[m][0]+" Y:"+cubeVertices[m][1]+"\n";
+        
     }
    // output.value+=
    // output.value+="Selected vertice:"+vertice[0]+"\n";
     switch(vertice[0]){
         case 0:
-            if(y>cubeVertices[vertice[0]][1])
-                return [0,1];
-            else return[0,3]
+           
+            //loking for mesh bounding box vertice for barycentric
+                xLocal=-99999999;
+                yLocal=-99999999; 
+                
+                if(cubeVertices[0][0] == xmin || cubeVertices[0][0] == xmax){
+                    xLocal=cubeVertices[0][0];
+                }
+                if(cubeVertices[1][0] == xmin || cubeVertices[1][0] == xmax){
+                    xLocal=cubeVertices[1][0];
+                }
+                
+                if(cubeVertices[0][1] == ymin || cubeVertices[0][1] == ymax){
+                    yLocal=cubeVertices[0][1];
+                }
+                if(cubeVertices[1][1] == ymin || cubeVertices[1][1] == ymax){
+                    yLocal=cubeVertices[1][1];
+                }
+            
+           //output.value+="AAAAAAAAAAAAAAAAAAAAAAAAAA\n";
+           //output.value+="xlocal:"+xLocal+"\n";
+          // output.value+="ylocal:"+yLocal+"\n";    
+            
+            triangle1=inTriangle(cubeVertices[0][0],cubeVertices[0][1],0,
+                       cubeVertices[1][0],cubeVertices[1][1],0,
+                       xLocal,yLocal,0,
+                       xo,yo,0
+                      );
+           if(triangle1==1){
+               return [0,1];
+           }else {
+               return[0,3];
+           }
+            
+                      
         break;
         case 1:
-            if(y>cubeVertices[vertice[0]][1])
-                return [1,2];
-            else return[0,1]
+             //loking for mesh bounding box vertice for barycentric
+                xLocal=-99999999;
+                yLocal=-99999999; 
+                
+                if(cubeVertices[1][0] == xmin || cubeVertices[1][0] == xmax){
+                    xLocal=cubeVertices[1][0];
+                }
+                if(cubeVertices[2][0] == xmin || cubeVertices[2][0] == xmax){
+                    xLocal=cubeVertices[2][0];
+                }
+                
+                if(cubeVertices[1][1] == ymin || cubeVertices[1][1] == ymax){
+                    yLocal=cubeVertices[1][1];
+                } 
+                if(cubeVertices[2][1] == ymin || cubeVertices[2][1] == ymax){
+                    yLocal=cubeVertices[2][1];
+                }
+            
+         //  output.value+="AAAAAAAAAAAAAAAAAAAAAAAAAA\n";
+          // output.value+="xlocal:"+xLocal+"\n";
+         //  output.value+="ylocal:"+yLocal+"\n";    
+            
+            triangle1=inTriangle(cubeVertices[1][0],cubeVertices[1][1],0,
+                       cubeVertices[2][0],cubeVertices[2][1],0,
+                       xLocal,yLocal,0,
+                       xo,yo,0
+                      );
+           if(triangle1==1){
+               return [1,2];
+           }else {
+               return[1,0];
+           }
+            
+            
+           /* triangle1=inTriangle(cubeVertices[0][0],cubeVertices[0][1],0,
+                       cubeVertices[1][0],cubeVertices[1][1],0,
+                       cubeVertices[3][0],cubeVertices[3][1],0,
+                       x,y,0
+                      );
+            triangle2=inTriangle(cubeVertices[1][0],cubeVertices[1][1],0,
+                       cubeVertices[2][0],cubeVertices[2][1],0,
+                       cubeVertices[3][0],cubeVertices[3][1],0,
+                       x,y,0
+                      );
+           if(triangle1==1){
+               return [1,0];
+           }else if(triangle2==1){
+               return[1,2];
+           }*/
+                
+                
+                
+            
         break;
         case 2:
-            if(y>cubeVertices[vertice[0]][1])
-                return [2,3];
-            else return[1,2]
+                xLocal=-99999999;
+                yLocal=-99999999; 
+                
+                if(cubeVertices[2][0] == xmin || cubeVertices[2][0] == xmax){
+                    xLocal=cubeVertices[2][0];
+                }
+                if(cubeVertices[3][0] == xmin || cubeVertices[3][0] == xmax){
+                    xLocal=cubeVertices[3][0];
+                }
+                
+                if(cubeVertices[2][1] == ymin || cubeVertices[2][1] == ymax){
+                    yLocal=cubeVertices[2][1];
+                }
+                if(cubeVertices[3][1] == ymin || cubeVertices[3][1] == ymax){
+                    yLocal=cubeVertices[3][1];
+                }
+            
+          // output.value+="AAAAAAAAAAAAAAAAAAAAAAAAAA\n";
+          // output.value+="xlocal:"+xLocal+"\n";
+          // output.value+="ylocal:"+yLocal+"\n";    
+            
+            triangle1=inTriangle(cubeVertices[2][0],cubeVertices[2][1],0,
+                       cubeVertices[3][0],cubeVertices[3][1],0,
+                       xLocal,yLocal,0,
+                       xo,yo,0
+                      );
+           if(triangle1==1){
+               return [2,3];
+           }else {
+               return[2,1];
+           }
+            
+            
+            /*
+              triangle1=inTriangle(cubeVertices[0][0],cubeVertices[0][1],0,
+                       cubeVertices[1][0],cubeVertices[1][1],0,
+                       cubeVertices[2][0],cubeVertices[2][1],0,
+                       x,y,0
+                      );
+            triangle2=inTriangle(cubeVertices[0][0],cubeVertices[0][1],0,
+                       cubeVertices[3][0],cubeVertices[3][1],0,
+                       cubeVertices[2][0],cubeVertices[2][1],0,
+                       x,y,0
+                      );
+           if(triangle1==1){
+               return [2,1];
+           }else if(triangle2==1){
+               return[2,3];
+           }*/
+            
         break;
         case 3:
-            if(y>cubeVertices[vertice[0]][1])
-                return [3,0];
-            else return[3,2]
+            
+                xLocal=-99999999;
+                yLocal=-99999999; 
+                
+                if(cubeVertices[3][0] == xmin || cubeVertices[3][0] == xmax){
+                    xLocal=cubeVertices[3][0];
+                }
+                if(cubeVertices[0][0] == xmin || cubeVertices[0][0] == xmax){
+                    xLocal=cubeVertices[0][0];
+                }
+                
+                if(cubeVertices[3][1] == ymin || cubeVertices[3][1] == ymax){
+                    yLocal=cubeVertices[3][1];
+                }
+                if(cubeVertices[0][1] == ymin || cubeVertices[0][1] == ymax){
+                    yLocal=cubeVertices[0][1];
+                }
+            
+           //output.value+="AAAAAAAAAAAAAAAAAAAAAAAAAA\n";
+          // output.value+="xlocal:"+xLocal+"\n";
+           //output.value+="ylocal:"+yLocal+"\n";    
+            
+            triangle1=inTriangle(cubeVertices[3][0],cubeVertices[3][1],0,
+                       cubeVertices[0][0],cubeVertices[0][1],0,
+                       xLocal,yLocal,0,
+                       xo,yo,0
+                      );
+           if(triangle1==1){
+               return [3,0];
+           }else {
+               return[3,2];
+           }
+            
+            /*
+             triangle1=inTriangle(cubeVertices[0][0],cubeVertices[0][1],0,
+                       cubeVertices[1][0],cubeVertices[1][1],0,
+                       cubeVertices[3][0],cubeVertices[3][1],0,
+                       x,y,0
+                      );
+            triangle2=inTriangle(cubeVertices[1][0],cubeVertices[1][1],0,
+                       cubeVertices[3][0],cubeVertices[3][1],0,
+                       cubeVertices[2][0],cubeVertices[2][1],0,
+                       x,y,0
+                      );
+           if(triangle1==1){
+               return [3,0];
+           }else if(triangle2==1){
+               return[3,2];
+           }*/
+            
         break;    
     }
    // return vertice;
@@ -167,8 +349,9 @@ function cubeVerticesNearPoint(x,y){
 /*********Collision function **********/
 /************************************************/
 this.collision=function collision(plane,planeWs,planeHs,mesh,width,height,camera){
-/******* Correct mesh rotation *******/
+/*output.value+= "***START******\n";*/
 mesh.rotation.z=correctRotation(mesh.rotation.z);
+/*output.value+= "mesh rotation.z"+mesh.rotation.z+"\n";*/   
 /******* Get cube vertices array *******/    
 meshRotationZ=mesh.rotation.z;
 getCubeVertices(mesh,width,height);
@@ -176,14 +359,15 @@ getCubeVertices(mesh,width,height);
 getPlaneValues(plane,planeWs,planeHs);    
 /******* get start vertice  *******/ 
 startVertice=getStartVertice(plane);        
-//output.value+="Start vertice:"+startVertice+"\n";    
+/*output.value+="Start vertice:"+startVertice+"\n"; */   
 /******* bounding box vertice diapozons  *******/     
-vXCube=Math.abs(Math.ceil((plane.geometry.vertices[startVertice].x-xmax)/segmentWsize));
-vYCube=Math.abs(Math.ceil((plane.geometry.vertices[startVertice].y-ymin)/segmentHsize));
+vXCube=Math.abs(Math.ceil((plane.geometry.vertices[startVertice].x-xmax)/segmentWsize))+1;
+vYCube=Math.abs(Math.ceil((plane.geometry.vertices[startVertice].y-ymin)/segmentHsize))+1;
 /******* calculate heights for vertices affecting mesh but not inside mesh  *******/      
 verticesAffectingMesh= new Array();   
 highestZvalue=-9999999999;
 checkIfDifferent=0;    
+    
 for(j=0;j<vYCube;j++){
     if(j!=0)startVertice+=verticesW;
     for(i=startVertice;i<startVertice+vXCube;i++){ 
@@ -200,6 +384,7 @@ for(j=0;j<vYCube;j++){
                 highestZvalue=plane.geometry.vertices[i].z;
                 //output.value+="Was here \n";
             }
+           /* output.value+="Highest 1st for in mesh zvalue:"+highestZvalue+"\n";*/
         }else{
           //  output.value+="Outside i:"+i+"\n";
             
@@ -238,7 +423,10 @@ for(j=0;j<vYCube;j++){
             }
             //output.value+="Inside vertice:"+insideVertice+":"+outsideVertice+"\n";
             if(insideVertice!=-1 && outsideVertice!=-1 && plane.geometry.vertices[insideVertice].z<plane.geometry.vertices[outsideVertice].z){
-                cubeV=cubeVerticesNearPoint(plane.geometry.vertices[insideVertice].x,plane.geometry.vertices[insideVertice].y);
+                cubeV=cubeVerticesNearPoint(plane.geometry.vertices[insideVertice].x,plane.geometry.vertices[insideVertice].y,
+                                            plane.geometry.vertices[outsideVertice].x,plane.geometry.vertices[outsideVertice].y
+                                           );
+               // output.value+="cubeV : "+cubeV[0]+" : "+ cubeV[1]+"\n";
                 p=lineCrossPoint(
                                      cubeVertices[cubeV[0]][0],
                                      cubeVertices[cubeV[0]][1],
@@ -255,6 +443,10 @@ for(j=0;j<vYCube;j++){
                                      plane.geometry.vertices[outsideVertice].x,
                                      plane.geometry.vertices[outsideVertice].z,
                                      p[0]);
+                  
+                    if(getHeight>plane.geometry.vertices[outsideVertice].z)getHeight=plane.geometry.vertices[outsideVertice].z;
+                    if(getHeight<plane.geometry.vertices[insideVertice].z)getHeight=plane.geometry.vertices[insideVertice].z;
+                    
                       // mesh.position.z=getHeight+3;
                   if(highestZvalue==-9999999999){
                       highestZvalue=getHeight;
@@ -262,7 +454,11 @@ for(j=0;j<vYCube;j++){
                       checkIfDifferent=1;
                       highestZvalue=getHeight;
                   }
-                /*output.value+="inside vertice: "+insideVertice+" outside vertice:"+outsideVertice+"\n";
+                    
+               /* output.value+="Cube 1st x:"+cubeVertices[cubeV[0]][0]+" y:"+cubeVertices[cubeV[0]][1]+"\n";
+                output.value+="Cube 2nd x:"+cubeVertices[cubeV[1]][0]+" y:"+cubeVertices[cubeV[1]][1]+"\n";
+                    
+                output.value+="inside vertice: "+insideVertice+" outside vertice:"+outsideVertice+"\n";
                 output.value+="Outside vertice cooords x:"+plane.geometry.vertices[outsideVertice].x+
                               " y:"+plane.geometry.vertices[outsideVertice].y+
                               " z:"+plane.geometry.vertices[outsideVertice].z+"\n";
@@ -281,22 +477,32 @@ for(j=0;j<vYCube;j++){
                 }
              
             }
-                
+             //output.value+="Highest 2nd for zvalue:"+highestZvalue+"\n";   
            // output.value+="Outside \n";
         }
     }//<-- for VxCube end
 }//<-- for vYcube end
     //
 /******* Apply and calculate plane collision  *******/    
-  //  output.value+="Highest zvalue:"+highestZvalue+"\n";
-    if(highestZvalue==-9999999999)highestZvalue=plane.geometry.vertices[startVertice].z;
+ // output.value+="Highest zvalue:"+highestZvalue+"\n";
+    if(isNaN(highestZvalue)){
+     output.value+="Highest value incorrect \n";
+   
+      
+ }else{
+ if(highestZvalue==-9999999999)highestZvalue=plane.geometry.vertices[startVertice].z;
   if(checkIfDifferent==0){
    mesh.position.z=highestZvalue+height/2;   
   }else{
    mesh.position.z=highestZvalue+height/2;   
   }
-  //   output.value+="******************************************************\n";
-    output.scrollTop=output.scrollHeight;
+ }    
+
+    
+
+    
+/*output.value+= "*********END***********\n";    */   
+output.scrollTop=output.scrollHeight;    
 }//<-- collision detection end
  
     
