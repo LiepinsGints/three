@@ -1,7 +1,9 @@
 // JavaScript Document
-function MeshMove(mesh,cam, rotateCamera){
+function MeshMove(mesh,cam, rotateCamera,_height,_width){
 //<--Obejct movement activators -->
 //0- not moving
+this.height=_height;
+this.width=_width;    
 //1 - enabled movement
 this.moveForward=0;
 this.moveBack=0;
@@ -11,7 +13,7 @@ this.moveUp=0;
 this.moveDown=0;
 //Preventing controls while falling
 this.controllsLocked=0;//1-locked 0 - unlocked
-this.movementType=0;//1- forward 2back
+this.movementType=0;//1- forward 2back 3-down
 //start position
 rotateCamera.update(cam,mesh.position.x,mesh.position.y,mesh.position.z,60,60,1,-1,0);
 cam.up = new THREE.Vector3(0,0,1);
@@ -84,6 +86,27 @@ this.setSpeed=function setSpeed (int) {
 	}
 	else
 	this.movementSpeed=int;
+}
+
+this.teleport=function teleport(x,y,z) {
+    heightDiference=cam.position.z-mesh.position.z;
+    //move mesh with vector
+    var a = new THREE.Vector2(x-mesh.position.x, y-mesh.position.y );
+    distance = pythagor(x-mesh.position.x, y-mesh.position.y,0);
+	a.normalize();
+    mesh.position.x += distance*a.x;
+	mesh.position.y += distance*a.y;
+    alert("go to teleport block distance: "+distance+"\n");
+    //move cam with vector
+    a = new THREE.Vector2(x-cam.position.x, y-cam.position.y );
+    distance = pythagor(x-cam.position.x, y-cam.position.y,0);
+    a.normalize();
+    cam.position.x += distance*a.x;
+	cam.position.y += distance*a.y;
+    //calculate new height
+     cam.position.z= heightDiference+z;   
+     mesh.position.z=z; 
+   
 }
 /*Update mesh movement */
 this.update=function update (delta) {

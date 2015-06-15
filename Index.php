@@ -105,6 +105,7 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 //<-- renderer definition end
 /******************** OBJECT DEFINITIONS START  *********************/ 
+   
 //--> create cube start
 var textureCube = THREE.ImageUtils.loadTexture( "img/textures/BoxTextures/crate_1.jpg" );
 var geometry = new THREE.BoxGeometry( 6, 6, 6 );
@@ -118,6 +119,8 @@ var rotateCamera= new  RotateArroundPoint(camera,cube.position.x,cube.position.y
 rotateCamera.update(camera,cube.position.x,cube.position.y,cube.position.z,-40,60,0,1)
 cube.rotation.z=getRadians(40);
 //<-- create cube end
+//player holder
+//player=cube;     
 //---> create sphera
 var spheraGeo = new THREE.SphereGeometry( 5, 32, 32 );
 var spheraMat= new THREE.MeshBasicMaterial( {color: 0xffff00} );
@@ -312,7 +315,7 @@ scene.add( plane );
 
 //var camPlayer= new CameraPlayer(cube,camera);
 var delta;
-var meshMove = new  MeshMove(cube,camera,rotateCamera);
+var meshMove = new  MeshMove(cube,camera,rotateCamera,6,6);
 meshMove.setSpeed(30);//30
 var planePos = new PlanePos();//<-- for nearest vertice and segment calculation
 var temp=planePos.getSegment(planeW, planeH, planeWs, planeHs,cube.position.x,cube.position.y);
@@ -408,7 +411,7 @@ var directionList = [];
 	//   HOWEVER: when the origin of the ray is within the target mesh, collisions do not occur
 function collide()
 {
-var originPoint = cube.position.clone();
+    var originPoint = cube.position.clone();
 	var a = new THREE.Vector2(cube.position.x-camera.position.x, cube.position.y-camera.position.y );
 	a.normalize();
 	

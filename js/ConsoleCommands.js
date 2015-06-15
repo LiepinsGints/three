@@ -39,7 +39,17 @@ if(explodedCommand.length!=0){
 		case 3:
 		
 		break;
-		case 4:
+        case 4:
+		    if(explodedCommand[0].toLowerCase()=="teleport"){
+                output.value+="Teleporting... \n";
+                if(isNaN(explodedCommand[1])==false && isNaN(explodedCommand[2])==false && isNaN(explodedCommand[3])==false){
+                   
+                   xp=Number(explodedCommand[1]);
+                   yp=Number(explodedCommand[2]);
+                   zp=Number(explodedCommand[3]);  
+                    meshMove.teleport(xp,yp,zp); 
+                }
+            }
 		
 		break;
 		case 5:
