@@ -492,8 +492,15 @@ for(j=0;j<vYCube;j++){
  }else{
  if(highestZvalue==-9999999999)highestZvalue=plane.geometry.vertices[startVertice].z;
   if(checkIfDifferent==0){
-   mesh.position.z=highestZvalue+height/2;   
+   if(camera!=-1){
+     camera.position.z+=(highestZvalue+height/2)-mesh.position.z;   
+   }
+      mesh.position.z=highestZvalue+height/2; 
+         
   }else{
+   if(camera!=-1){
+     camera.position.z+=(highestZvalue+height/2)-mesh.position.z;   
+   }      
    mesh.position.z=highestZvalue+height/2;   
   }
  }    
