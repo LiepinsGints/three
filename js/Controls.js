@@ -3,6 +3,7 @@ function keyDown(event){
 	switch(event.keyCode){
      case 37 : //left arrow 
 	 meshMove.setLeft(1);
+     
     break;
     case 38 : // up arrow  
 	 meshMove.setForward(1);
@@ -10,6 +11,7 @@ function keyDown(event){
     break;
     case 39 : // right arrow 
      meshMove.setRight(1);
+          
     break;
     case 40 : //down arrow
     // cube.translateX( 1 );

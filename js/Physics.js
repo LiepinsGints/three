@@ -214,7 +214,7 @@ function cubeVerticesNearPoint(x,y,xo,yo){
            if(triangle1==1){
                return [1,2];
            }else {
-               return[1,0];
+               return[0,1];
            }
             
             
@@ -268,7 +268,7 @@ function cubeVerticesNearPoint(x,y,xo,yo){
            if(triangle1==1){
                return [2,3];
            }else {
-               return[2,1];
+               return[1,2];
            }
             
             
@@ -319,9 +319,9 @@ function cubeVerticesNearPoint(x,y,xo,yo){
                        xo,yo,0
                       );
            if(triangle1==1){
-               return [3,0];
+               return [0,3];
            }else {
-               return[3,2];
+               return[2,3];
            }
             
             /*
@@ -348,7 +348,7 @@ function cubeVerticesNearPoint(x,y,xo,yo){
 /************************************************/    
 /*********Collision function **********/
 /************************************************/
-this.collision=function collision(plane,planeWs,planeHs,mesh,width,height,camera){
+this.collision=function collision(plane,planeWs,planeHs,mesh,width,height,camera, delta){
 /*output.value+= "***START******\n";*/
 mesh.rotation.z=correctRotation(mesh.rotation.z);
 /*output.value+= "mesh rotation.z"+mesh.rotation.z+"\n";*/   
@@ -427,6 +427,24 @@ for(j=0;j<vYCube;j++){
                                             plane.geometry.vertices[outsideVertice].x,plane.geometry.vertices[outsideVertice].y
                                            );
                // output.value+="cubeV : "+cubeV[0]+" : "+ cubeV[1]+"\n";
+                //check if object rotation equals zero
+                if((cubeVertices[cubeV[0]][0]==cubeVertices[cubeV[1]][0] && 
+                   plane.geometry.vertices[insideVertice].x==plane.geometry.vertices[outsideVertice].x)||
+                   (cubeVertices[cubeV[0]][1]==cubeVertices[cubeV[1]][1] && 
+                   plane.geometry.vertices[insideVertice].y==plane.geometry.vertices[outsideVertice].y)
+                  ){
+                    // swap vertices
+                    if(cubeV[0]==0 && cubeV[1]==1)cubeV[1]=3;
+                    else if(cubeV[0]==1 && cubeV[1]==2)cubeV[1]=0;
+                    else if(cubeV[0]==2 && cubeV[1]==3)cubeV[1]=1;
+                    else if(cubeV[0]==3 && cubeV[1]==0)cubeV[1]=2;                    
+                    else if(cubeV[0]==0 && cubeV[1]==3)cubeV[1]=1;
+                    else if(cubeV[0]==1 && cubeV[1]==0)cubeV[1]=2;
+                    else if(cubeV[0]==2 && cubeV[1]==1)cubeV[1]=3;
+                    else if(cubeV[0]==3 && cubeV[1]==2)cubeV[1]=0;
+                    
+                }
+                
                 p=lineCrossPoint(
                                      cubeVertices[cubeV[0]][0],
                                      cubeVertices[cubeV[0]][1],
@@ -438,12 +456,29 @@ for(j=0;j<vYCube;j++){
                                      plane.geometry.vertices[outsideVertice].y);
                 
                 if(type==0){
+                     /*if(mesh.rotation.z==0){
+                         output.value+="*************START**************\n";   
+                         output.value+="Vertice out:"+insideVertice+"\n";   
+                         output.value+="Vertice out:"+outsideVertice+"\n"; 
+                         output.value+="cubeVertices[cubeV[0]][0]:"+cubeVertices[cubeV[0]][0]+"\n";
+                         output.value+="cubeVertices[cubeV[0]][1]:"+cubeVertices[cubeV[0]][1]+"\n";
+                         output.value+="cubeVertices[cubeV[1]][0]:"+cubeVertices[cubeV[1]][0]+"\n";
+                         output.value+="cubeVertices[cubeV[1]][1]:"+cubeVertices[cubeV[1]][1]+"\n";
+                         output.value+="Outside x:"+plane.geometry.vertices[outsideVertice].x+"\n";
+                         output.value+="Outside y:"+plane.geometry.vertices[outsideVertice].y+"\n";
+                         output.value+="Inside x:"+plane.geometry.vertices[insideVertice].x+"\n";
+                         output.value+="Inside y:"+plane.geometry.vertices[insideVertice].y+"\n";
+                         output.value+="*************END**************\n";
+                         
+                     }*/
                 getHeight=lineCrossX(plane.geometry.vertices[insideVertice].x,
                                      plane.geometry.vertices[insideVertice].z,
                                      plane.geometry.vertices[outsideVertice].x,
                                      plane.geometry.vertices[outsideVertice].z,
                                      p[0]);
+                   
                   
+                    
                     if(getHeight>plane.geometry.vertices[outsideVertice].z)getHeight=plane.geometry.vertices[outsideVertice].z;
                     if(getHeight<plane.geometry.vertices[insideVertice].z)getHeight=plane.geometry.vertices[insideVertice].z;
                     

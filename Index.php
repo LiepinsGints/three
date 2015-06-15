@@ -83,6 +83,7 @@
 <script type="text/javascript" src="js/Plane.js"></script>
 <!-- some tutorial https://stemkoski.github.io/Three.js/#mesh-movement-->
 <!--free models https://clara.io/view/19a8b999-4807-4252-be15-043b1f6e265c-->
+<!-- free models http://www.md2.sitters-electronics.nl/models.html-->    
 </head>
 <body>
 <?php
@@ -432,9 +433,7 @@ var originPoint = cube.position.clone();
 			 //collisionResults[0].object.material.color = new THREE.Color( 0xff0000 );
 			 	collisionResults[0].object.position.x += 1*a.x;
 				collisionResults[0].object.position.y += 1*a.y;
-               // physics.collision(plane,planeWs,planeHs,collisionResults[0].object,
-              //                   10,10
-                //                 ,camera);  
+               physics.collision(plane,planeWs,planeHs,collisionResults[0].object,10,20,-1,delta);  
 			 output.value+="Hit \n"
 			}
 	}	

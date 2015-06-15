@@ -80,8 +80,11 @@ function lineCrossPoint(Ax,Ay,Ax2,Ay2,Bx,By,Bx2,By2){
     m1=(Ay-Ay2)/(Ax-Ax2);
     m2=(By-By2)/(Bx-Bx2);
     
+    if(isFinite(m1)==false)m1=0;
+    if(isFinite(m2)==false)m2=0;
     
     if(m1==0 || m2==0){
+        //output.value+="in core m1:"+m1+" m2:"+m2 +"\n";
           if(m1==0 && m2!=0){
               if(Ax-Ax2==0){
                   point=[Ax,lineCrossX(Bx,By,Bx2,By2,Ax)];
@@ -101,14 +104,26 @@ function lineCrossPoint(Ax,Ay,Ax2,Ay2,Bx,By,Bx2,By2){
               }
          }     
         else if(m1==0 && m2 ==0){
+           //output.value+="in 2 exceptions \n";
              if(Ax-Ax2==0 && By-By2==0){
                  point=[Ax,By];
+              //output.value+="Used Good 1st \n";
                  return point;
+                 
              }
              if(Bx-Bx2==0 && Ay-Ay2==0){
                  point=[Bx,Ay];
+               //output.value+="Used Good 2nd \n";
                  return point;
              }
+            if(Ay-Ay2==0 && By-By2==0){
+                output.value+="Used bad 3rd \n";
+                 output.value+=("Ax: "+Ax+" AY:"+Ay+" \nAx2:"+Ax2+"Ay2:"+Ay2+"\nBx: "+Bx+" BY:"+By+"\n Bx2:"+Bx2+"By2:"+By2+"\n" );
+            }
+            if(Ax-Ax2==0 && Bx-Bx2==0){
+                 //alert("aa");
+                output.value+="Used bad  4th \n";
+            }
         
         }   
     }else if(m1!=0 && m2!=0){
