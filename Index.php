@@ -447,7 +447,15 @@ renderer.render(scene, camera);
 delta = clock.getDelta();
 update(delta);
 //rotations    
-  
+
+//mesh gravity    
+if(meshMove.getControllsLocked()==1){        
+	if(meshMove.getMovementType()==1) 
+    meshMove.setForward(1);
+    else if(meshMove.getMovementType()==2)
+    meshMove.setBack(1);    
+}
+//light point rot    
 rotateLight.update(lightPoint,cube.position.x,cube.position.y,cube.position.z,90*delta,50,2,1);
 //EARTH + MOON   
 rotateEarth.update(earth,sun.position.x,sun.position.y,sun.position.z,4*delta,150,2,1);    

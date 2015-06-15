@@ -1,20 +1,27 @@
+
+
+
 document.addEventListener( 'keydown', keyDown, false );
 function keyDown(event){
 	switch(event.keyCode){
-     case 37 : //left arrow 
-	 meshMove.setLeft(1);
+    case 37 : //left arrow 
+    if(meshMove.getControllsLocked()==0) 
+    meshMove.setLeft(1);
      
     break;
     case 38 : // up arrow  
+    if(meshMove.getControllsLocked()==0)        
 	 meshMove.setForward(1);
 	 //cube.translateX( -1 );
     break;
     case 39 : // right arrow 
+    if(meshMove.getControllsLocked()==0)        
      meshMove.setRight(1);
           
     break;
     case 40 : //down arrow
     // cube.translateX( 1 );
+    if(meshMove.getControllsLocked()==0)         
 	 meshMove.setBack(1);
     break;
 	//rotate cube

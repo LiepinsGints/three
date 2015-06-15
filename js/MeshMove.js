@@ -9,7 +9,9 @@ this.moveLeft=0;
 this.moveRight=0;
 this.moveUp=0;
 this.moveDown=0;
-
+//Preventing controls while falling
+this.controllsLocked=0;//1-locked 0 - unlocked
+this.movementType=0;//1- forward 2back
 //start position
 rotateCamera.update(cam,mesh.position.x,mesh.position.y,mesh.position.z,60,60,1,-1,0);
 cam.up = new THREE.Vector3(0,0,1);
@@ -17,6 +19,22 @@ cam.lookAt(new THREE.Vector3(mesh.position.x,mesh.position.y,mesh.position.z));
 
 
 this.movementSpeed=10;
+    
+this.getControllsLocked=function getControllsLocked () {
+	return this.controllsLocked;
+} 
+
+this.getMovementType=function getMovementType () {
+	return this.movementType;
+}    
+
+this.setControllsLocked=function getControllsLocked (int) {
+    this.controllsLocked=int;
+} 
+
+this.movementType=function movementType (int) {
+	this.movementType=int;
+}  
 /*Activate deactivate movement*/
 this.setForward=function setForward (int) {
 	if(int!=0 && int !=1)
@@ -87,7 +105,22 @@ this.update=function update (delta) {
 	cam.position.x += this.movementSpeed*delta*a.x;
 	cam.position.y += this.movementSpeed*delta*a.y;
 	
-    physics.collision(plane,planeWs,planeHs,mesh,6,6,cam); 
+    movement_status=physics.collision(plane,planeWs,planeHs,mesh,6,6,cam,delta); 
+    if(movement_status==1){
+        mesh.position.x -= this.movementSpeed*delta*a.x;
+	    mesh.position.y -= this.movementSpeed*delta*a.y;
+	
+	    cam.position.x -= this.movementSpeed*delta*a.x;
+	    cam.position.y -= this.movementSpeed*delta*a.y;
+    } else if(movement_status==2){
+        this.controllsLocked=1;//1-locked 0 - unlocked
+        this.movementType=1;//1- forward 2back   
+    }else if(movement_status==0 && this.controllsLocked==1){
+        this.controllsLocked=0;//1-locked 0 - unlocked
+        this.movementType=0;//1- forward 2back 
+        this.moveForward=0;
+       
+    }
    // editor.collisionPlane2(plane,300,300,mesh,6,6,cam);   
 	//mesh.translateY( this.movementSpeed*delta );
 	//cam.translateY( this.movementSpeed*delta );
@@ -104,7 +137,22 @@ this.update=function update (delta) {
 	cam.position.x -= this.movementSpeed*delta*a.x;
 	cam.position.y -= this.movementSpeed*delta*a.y;
     //editor.collisionPlane2(plane,300,300,mesh,6,6,cam); 
-    physics.collision(plane,planeWs,planeHs,mesh,6,6,cam);  
+     movement_status=physics.collision(plane,planeWs,planeHs,mesh,6,6,cam,delta); 
+    if(movement_status==1){
+        mesh.position.x += this.movementSpeed*delta*a.x;
+	    mesh.position.y += this.movementSpeed*delta*a.y;
+	
+	    cam.position.x += this.movementSpeed*delta*a.x;
+	    cam.position.y += this.movementSpeed*delta*a.y;
+    }else if(movement_status==2){
+        this.controllsLocked=1;//1-locked 0 - unlocked
+        this.movementType=2;//1- forward 2back   
+    }else if(movement_status==0 && this.controllsLocked==1){
+        
+        this.controllsLocked=0;//1-locked 0 - unlocked
+        this.movementType=0;//1- forward 2back   
+        this.moveBack=0;
+    }
   }
   if(this.moveLeft==1){
 	//mesh.position.x -= this.movementSpeed*delta;
@@ -115,6 +163,8 @@ this.update=function update (delta) {
 	cam.up = new THREE.Vector3(0,0,1);
 	cam.lookAt(new THREE.Vector3(mesh.position.x,mesh.position.y,mesh.position.z));
 	mesh.rotation.z+=1* Math.PI / 180;
+      
+      
    // editor.collisionPlane2(plane,300,300,mesh,cam);  
   }
     //
