@@ -28,6 +28,7 @@ if(explodedCommand.length!=0){
 			}else if(explodedCommand[0].toLowerCase()=="help"){
 			  output.value+=
 		      "console: clear - clears output console \n"+
+              "console: teleport x y z - teleport player \n"+      
 		  	  "---end of command help --- \n";	
 			}else{
 		      output.value+="console:Incorrect command.. type 'help' for info.\n";	
@@ -40,7 +41,7 @@ if(explodedCommand.length!=0){
 		
 		break;
         case 4:
-		    if(explodedCommand[0].toLowerCase()=="teleport"){
+		    if(explodedCommand[0].toLowerCase()=="teleport" || explodedCommand[0].toLowerCase()=="tele"){
                 output.value+="Teleporting... \n";
                 if(isNaN(explodedCommand[1])==false && isNaN(explodedCommand[2])==false && isNaN(explodedCommand[3])==false){
                    

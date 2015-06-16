@@ -6,7 +6,7 @@ function Physics(_output){
 meshRotationZ=-999999999;    
 cubeVertices=new Array();   
 //cube bounding box values
-fall=15;
+fall=30;
 xmin=0;
 xmax=0;
 ymin=0;
@@ -349,7 +349,11 @@ function cubeVerticesNearPoint(x,y,xo,yo){
 /************************************************/    
 /*********Collision function **********/
 /************************************************/
-this.collision=function collision(plane,planeWs,planeHs,mesh,width,height,camera, delta){
+//parameter describes additioonal events like teleport etc 
+//prameter 1 =teleport
+//parameter 2=jump   
+//parameter2 additonal parameter      
+this.collision=function collision(plane,planeWs,planeHs,mesh,width,height,camera, delta,parameter){
 /*output.value+= "***START******\n";*/
 mesh.rotation.z=correctRotation(mesh.rotation.z);
 /*output.value+= "mesh rotation.z"+mesh.rotation.z+"\n";*/   
@@ -528,14 +532,23 @@ for(j=0;j<vYCube;j++){
  }else{
  if(highestZvalue==-9999999999)highestZvalue=plane.geometry.vertices[startVertice].z;
   if(checkIfDifferent==0){
-  if((highestZvalue)+height >=mesh.position.z &&(highestZvalue+height/2)-mesh.position.z<=height){
-   if(camera!=-1){
-     camera.position.z+=(highestZvalue+height/2)-mesh.position.z;   
-   }
+  if(((highestZvalue)+height >=mesh.position.z &&(highestZvalue+height/2)-mesh.position.z<=height)||parameter==1){
+      if(parameter!=2){
+      if(camera!=-1){
+      camera.position.z+=(highestZvalue+height/2)-mesh.position.z;   
+      }
       mesh.position.z=highestZvalue+height/2; 
+      }
       return 0;
-   }else if((highestZvalue+height/2)-mesh.position.z>height) {return 1;}
-    else if((highestZvalue)+height <mesh.position.z) { 
+   } else if(parameter==2 && mesh.position.z<=highestZvalue){
+        if(camera!=-1){
+              camera.position.z+=(highestZvalue+height/2)-mesh.position.z;   
+            }
+       mesh.position.z=highestZvalue+height/2; 
+       return 3;
+   }   
+      else if((highestZvalue+height/2)-mesh.position.z>height) {return 1;}
+    else if((highestZvalue)+height <mesh.position.z && parameter!=2) { 
                     mesh.position.z-=fall*delta;
                     if(camera!=-1){
                     camera.position.z-=fall*delta;   
@@ -547,17 +560,28 @@ for(j=0;j<vYCube;j++){
                     if(highestZvalue+height/2==mesh.position.z)
                     return 0;
                     else return 2;
-    }     
+    }
+     
+      
   }else{
       //reserved for future plane equation implementing
    
-if((highestZvalue)+height >=mesh.position.z && (highestZvalue+height/2)-mesh.position.z<=height ){      
+if(((highestZvalue)+height >=mesh.position.z && (highestZvalue+height/2)-mesh.position.z<=height)||parameter==1 ){      
+   if(parameter!=2){
    if(camera!=-1){
      camera.position.z+=(highestZvalue+height/2)-mesh.position.z;   
    }      
    mesh.position.z=highestZvalue+height/2;   
-   }else if((highestZvalue+height/2)-mesh.position.z>height) {return 1;}
-   else if((highestZvalue)+height <mesh.position.z) {
+   }
+   } else if(parameter==2 && mesh.position.z<=highestZvalue){
+        if(camera!=-1){
+              camera.position.z+=(highestZvalue+height/2)-mesh.position.z;   
+            }
+       mesh.position.z=highestZvalue+height/2; 
+       return 3;
+   }   
+      else if((highestZvalue+height/2)-mesh.position.z>height) {return 1;}
+   else if((highestZvalue)+height <mesh.position.z && parameter!=2) {
                     mesh.position.z-=fall*delta;
                     if(camera!=-1){
                     camera.position.z-=fall*delta;   
@@ -570,7 +594,8 @@ if((highestZvalue)+height >=mesh.position.z && (highestZvalue+height/2)-mesh.pos
                     return 0;
                     else return 2;
       
-   }         
+   }   
+  
   }
      
  }    

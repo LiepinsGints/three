@@ -9,7 +9,6 @@
 <script type="text/javascript" src="js/three.js"></script>
 <script type="text/javascript" src="js/Math.js"></script>
 <script type="text/javascript" src="js/label.js"></script>
-<script type="text/javascript" src="js/CameraPlayer.js"></script>
 <script type="text/javascript" src="js/MeshMove.js"></script>
 <script type="text/javascript" src="js/planePos.js"></script>
 <script type="text/javascript" src="js/RotateArroundPoint.js"></script>

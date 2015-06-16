@@ -4,6 +4,12 @@
 document.addEventListener( 'keydown', keyDown, false );
 function keyDown(event){
 	switch(event.keyCode){
+    
+    case 96 : //num 0
+    if(meshMove.getControllsLocked()==0) 
+    meshMove.setJump(1,2 );
+     
+    break;
     case 37 : //left arrow 
     if(meshMove.getControllsLocked()==0) 
     meshMove.setLeft(1);
