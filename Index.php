@@ -384,7 +384,9 @@ var arrowList = [];
 var directionList = [];
 
 	var wallGeometry = new THREE.BoxGeometry( 10, 10, 20, 1, 1, 1 );
-	var wallMaterial = new THREE.MeshBasicMaterial( {color: 0x8888ff} );
+    var textureWall = THREE.ImageUtils.loadTexture( "img/textures/Stone/Stone3.jpg" );   
+    var wallMaterial = new THREE.MeshLambertMaterial( { map : textureWall }  );
+	
 	var wireMaterial = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe:true } );
 	
 	var wall = new THREE.Mesh(wallGeometry, wallMaterial);
@@ -397,10 +399,16 @@ var directionList = [];
 	var wall2 = new THREE.Mesh(wallGeometry, wallMaterial);
     wall2.geometry.computeBoundingBox();
 	wall2.position.set(-150, 50, 5);
-	wall2.rotation.y = 3.14159 / 2;
+	//wall2.rotation.y = 3.14159 / 2;
 	scene.add(wall2);
 	collidableMeshList.push(wall2);
 
+    var wall3 = new THREE.Mesh(wallGeometry, wallMaterial);
+    wall3.geometry.computeBoundingBox();
+	wall3.position.set(0, 0, 5);
+	//wall2.rotation.y = 3.14159 / 2;
+	scene.add(wall3);
+	collidableMeshList.push(wall3);
    // collidableMeshList.push(plane);
 // collision detection:
 	//   determines if any of the rays from the cube's origin to each vertex
